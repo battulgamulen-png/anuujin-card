@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ануужинд зориулсан мэндчилгээ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="card" id="card">
+      <section class="welcome" id="welcome">
+        <div class="star-field" aria-hidden="true">
+          <span>✦</span><span>✧</span><span>★</span><span>✦</span><span>·</span><span>✧</span>
+          <span>★</span><span>✦</span><span>·</span><span>✧</span><span>✦</span><span>★</span>
+        </div>
+        <button class="secret-star" id="secretStar" aria-label="Нууц мессежийг нээх">✦</button>
+        <h1 class="typewriter" id="welcomeTitle">Ануужин хүүхдэд<br /><em>өдрийн мэнд ээ!</em></h1>
+        <button class="yes continue" id="continueButton" aria-label="Үргэлжлүүлэх">→</button>
+        <div class="secret-note hidden" id="secretNote" aria-live="polite">P.S. Өнөөдөр заавал инээмсэглээрэй ✦</div>
+        <div class="page-dots" aria-label="1-р хуудас, нийт 3">
+          <span class="active"></span><span></span><span></span>
+        </div>
+      </section>
+
+      <section class="zodiac hidden" id="zodiac">
+        <svg class="constellation" viewBox="0 0 120 120" aria-hidden="true">
+          <g class="lines"><line x1="52" y1="12" x2="58" y2="42" /><line x1="58" y1="42" x2="62" y2="58" /><line x1="62" y1="58" x2="22" y2="104" /><line x1="62" y1="58" x2="100" y2="94" /></g>
+          <g class="stars"><circle cx="52" cy="12" r="2.2" /><circle cx="58" cy="42" r="2.8" /><circle cx="62" cy="58" r="3.4" /><circle cx="22" cy="104" r="3" /><circle cx="100" cy="94" r="2.4" /></g>
+        </svg>
+        <figure class="photo-frame" id="photoFrame" title="Дарж зургийг солино">
+          <div class="photo-stack">
+            <img class="zodiac-photo" src="anuujin-photo.jpg" alt="Ануужин" />
+            <img class="zodiac-photo zodiac-photo-alt" src="anuujin-photo-2.jpg" alt="" aria-hidden="true" />
+          </div>
+        </figure>
+        <h2><em>Ануужингийн өнөөдрийн зурхайнд</em></h2>
+        <div class="horoscope-details">
+          <section class="horoscope-card">
+            <p class="horoscope-title">Өнөөдрийн хувьд · 2026.09.23, Лхагва гараг</p>
+            <p>Өдөр өнгөрөх тусам нэгэн хэмнэлд амьдрах хэв маягаасаа татгалзаж, шинэчлэлт хийхээр зорих төлөвтэй. Гэхдээ хүчлэх хэрэггүй ч хойш тавивал үнэгүйдэхийг санаж, бодсоноо бодит болгоорой.</p>
+          </section>
+          <section class="horoscope-card personal">
+            <p class="horoscope-title">Одод юу гэж байна</p>
+            <p>Оддын зөвлөгөө: өнөөдөр дуртай зүйлээ идэж, дуртай дуугаа сонсож, өөртөө "сайн байна" гэж хэлээрэй. Одод тэгж хэлэхийг хүсч байна.</p>
+          </section>
+        </div>
+        <div class="page-actions">
+          <button class="back" id="zodiacBackButton" aria-label="Буцах">←</button>
+          <button class="yes continue" id="zodiacContinueButton" aria-label="Цааш үргэлжлүүлэх">→</button>
+        </div>
+        <div class="page-dots" aria-label="2-р хуудас, нийт 3">
+          <span></span><span class="active"></span><span></span>
+        </div>
+      </section>
+
+      <section class="farewell hidden" id="farewell">
+        <div class="music-icon" aria-hidden="true">♫</div>
+        <h2>Өдрийг гоё<br /><em>өнгөрүүлээрэй гээд</em><br />гоё дуугаар ая барияа&nbsp;<span class="star-mark">✦</span></h2>
+        <button class="music-player" id="musicPlayer" type="button" aria-label="A-Sound хамтлагийн Хэлээгүй ч дууг тоглуулах">
+          <div class="record" aria-hidden="true"><span></span></div>
+          <div class="track-info">
+            <span class="now-playing">now playing</span>
+            <strong>A-Sound — Хэлээгүй ч…</strong>
+            <div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="progress"><span id="progressBar"></span></div>
+            <span class="song-placeholder" id="songStatus">дарж тоглуулаарай</span>
+          </div>
+        </button>
+        <iframe class="youtube-player" id="youtubePlayer" title="A-Sound — Хэлээгүй ч" src="https://www.youtube.com/embed/Uv4zZpWDr9c?enablejsapi=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" tabindex="-1" aria-hidden="true"></iframe>
+        <p class="final-note hidden" id="finalNote" aria-live="polite">P.S. Инээмсэглэл чинь хамгийн сайхан нь шүү ✦</p>
+        <button class="back farewell-back" id="farewellBackButton" aria-label="Буцах">←</button>
+        <div class="page-dots" aria-label="3-р хуудас, нийт 3">
+          <span></span><span></span><span class="active"></span>
+        </div>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
