@@ -53,6 +53,13 @@ def main():
     if not days:
         print("Зурхай олдсонгүй, файлыг өөрчлөхгүй", file=sys.stderr)
         sys.exit(1)
+    try:
+        with open(OUT, encoding="utf-8") as f:
+            if json.load(f).get("days") == days:
+                print("Зурхай өөрчлөгдөөгүй, файл хэвээр")
+                return
+    except (OSError, ValueError):
+        pass
     data = {
         "sign": "Мэлхий",
         "source": "gogo.mn",
