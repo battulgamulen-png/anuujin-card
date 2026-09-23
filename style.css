@@ -33,6 +33,7 @@ h1 { font-size: clamp(42px, 8vw, 62px); } h1 em, h2 em { color: var(--rose); fon
 .card.flip-in { animation: flipIn .5s cubic-bezier(.2,.75,.3,1) both; }
 .card.flip-in.backward { animation-name: flipInBack; }
 /* Typewriter гарчиг */
+.typewriter .word { display: inline-block; white-space: nowrap; }
 .typewriter .char { display: inline-block; opacity: 0; animation: charIn .32s ease both; animation-delay: calc(var(--i) * 60ms); }
 /* Од, зүрх унах */
 .confetti-piece { position: fixed; top: -30px; z-index: 50; pointer-events: none; font-size: var(--s); color: var(--c); left: var(--x); animation: fall var(--d) ease-in forwards; }
@@ -92,7 +93,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
   .card { width: calc(100vw - 24px); min-height: 0; margin: 0; padding: 48px 20px 28px; border-radius: 24px; }
   .card::before { inset: 9px; border-radius: 17px; }
   .welcome { min-height: 0; }
-  .welcome h1 { font-size: clamp(35px, 10.8vw, 46px); }
+  .welcome h1 { font-size: clamp(30px, 9.2vw, 40px); }
   .photo-frame { width: 150px; margin-bottom: 16px; padding: 6px; }.zodiac-photo { width: 138px; height: 138px; }
   .zodiac h2 { font-size: clamp(30px, 8.6vw, 40px); }
   .farewell h2 { font-size: clamp(30px, 8.4vw, 38px); }

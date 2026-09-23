@@ -53,16 +53,22 @@ const typewrite = (element) => {
   const wrap = (node) => {
     if (node.nodeType === Node.TEXT_NODE) {
       const fragment = document.createDocumentFragment();
-      for (const char of node.textContent) {
-        if (char.trim() === '') {
-          fragment.appendChild(document.createTextNode(char));
+      // Үг бүрийг нэг блок болгож, мөр зөвхөн үгийн завсраар таслагдана
+      for (const part of node.textContent.split(/(\s+)/)) {
+        if (part.trim() === '') {
+          if (part) fragment.appendChild(document.createTextNode(part));
           continue;
         }
-        const span = document.createElement('span');
-        span.className = 'char';
-        span.style.setProperty('--i', index++);
-        span.textContent = char;
-        fragment.appendChild(span);
+        const word = document.createElement('span');
+        word.className = 'word';
+        for (const char of part) {
+          const span = document.createElement('span');
+          span.className = 'char';
+          span.style.setProperty('--i', index++);
+          span.textContent = char;
+          word.appendChild(span);
+        }
+        fragment.appendChild(word);
       }
       node.replaceWith(fragment);
     } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'BR') {
