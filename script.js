@@ -76,7 +76,7 @@ typewrite(welcomeTitle);
 // Од, зүрх бууж унах
 const random = (min, max) => min + Math.random() * (max - min);
 const dropConfetti = () => {
-  const symbols = ['✦', '✧', '★', '♡', '♥', '·'];
+  const symbols = ['✦', '✧', '★', '·'];
   const colors = ['#e9aa78', '#e86c88', '#f4b6c7', '#ffd166'];
   for (let i = 0; i < 28; i++) {
     const piece = document.createElement('span');
@@ -132,7 +132,7 @@ photoFrame.addEventListener('click', () => {
 // Дуу тоглох үед урсах нот, од
 let noteTimer = null;
 const spawnNote = () => {
-  const symbols = ['♪', '♫', '✦', '✧', '♡'];
+  const symbols = ['♪', '♫', '✦', '✧'];
   const colors = ['#e9aa78', '#e86c88', '#f4b6c7'];
   const note = document.createElement('span');
   note.className = 'float-note';
