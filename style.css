@@ -74,6 +74,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .youtube-player { position: absolute; top: 0; left: 0; width: 320px; height: 180px; border: 0; opacity: 0; pointer-events: none; clip-path: inset(50%); }
 .youtube-player.is-visible { position: static; display: block; width: 100%; max-width: 420px; height: auto; aspect-ratio: 16 / 9; margin: 12px auto 0; border-radius: 16px; opacity: 1; pointer-events: auto; clip-path: none; box-shadow: 0 10px 25px #a3557030; }
 .progress span { transition: width .4s linear; }
+.player-note { max-width: 380px; margin: 16px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 21px; line-height: 1.15; }
 .signature { margin: 18px 0 0; color:#c793a1; font-family:Caveat,cursive; font-size:19px; }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: #e86c88; }
 @keyframes charIn { from { opacity:0; transform:translateY(8px) rotate(-4deg); } to { opacity:1; transform:none; } }
