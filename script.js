@@ -25,6 +25,28 @@ let playerReady = false;
 let pendingPlay = false;
 let progressTimer = null;
 
+// Өнөөдрийн зурхайг horoscope.json-оос (GitHub Actions өдөр бүр шинэчилдэг) ачаална
+const horoscopeTitle = document.querySelector('#horoscopeTitle');
+const horoscopeText = document.querySelector('#horoscopeText');
+const WEEKDAYS = ['Ням', 'Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба'];
+const loadHoroscope = async () => {
+  try {
+    const response = await fetch(`horoscope.json?t=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) return;
+    const { days } = await response.json();
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ulaanbaatar' }).format(new Date());
+    const entry = days.find((d) => d.date === today) || days.filter((d) => d.date <= today).pop();
+    if (!entry) return;
+    const [year, month, day] = entry.date.split('-').map(Number);
+    const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+    horoscopeTitle.textContent = `Өнөөдрийн хувьд · ${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}, ${weekday} гараг`;
+    horoscopeText.textContent = entry.text;
+  } catch {
+    // Ачаалагдахгүй бол HTML доторх текст хэвээр үлдэнэ
+  }
+};
+loadHoroscope();
+
 // Гарчгийг үсэг үсгээр гаргах (typewriter)
 const typewrite = (element) => {
   let index = 0;
