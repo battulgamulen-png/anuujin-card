@@ -95,7 +95,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
   .welcome h1 { font-size: clamp(35px, 10.8vw, 46px); }
   .photo-frame { width: 150px; margin-bottom: 16px; padding: 6px; }.zodiac-photo { width: 138px; height: 138px; }
   .zodiac h2 { font-size: clamp(30px, 8.6vw, 40px); }
-  .farewell h2 { font-size: clamp(44px, 12vw, 54px); }
+  .farewell h2 { font-size: clamp(30px, 8.4vw, 38px); }
   .horoscope-details { margin-top: 18px; gap: 8px; }
   .horoscope-card { padding: 12px 14px; font-size: 12.5px; line-height: 1.62; }
   .page-actions { flex-direction: row; margin-top: 22px; }
@@ -108,7 +108,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
   .card { padding: 34px 18px 22px; }
   .photo-frame { width: 128px; margin-bottom: 10px; }.zodiac-photo { width: 116px; height: 116px; }
   .zodiac h2 { font-size: 30px; }
-  .farewell h2 { font-size: 42px; }
+  .farewell h2 { font-size: 29px; }
   .horoscope-details { margin-top: 13px; }
   .horoscope-card { padding: 10px 12px; font-size: 12px; }
 }
