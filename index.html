@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=3" />
+    <link rel="stylesheet" href="style.css?v=4" />
   </head>
   <body>
     <main class="card" id="card">
@@ -30,8 +30,8 @@
         <h1 class="typewriter" id="welcomeTitle">Ануужин гэдэг хүүхдэд<br />өглөө, өдөр, оройн<br /><em>мэээээнд!</em></h1>
         <button class="yes continue" id="continueButton" aria-label="Үргэлжлүүлэх">→</button>
         <div class="secret-note hidden" id="secretNote" aria-live="polite">P.S. Өнөөдөр заавал инээмсэглээрэй ✦</div>
-        <div class="page-dots" aria-label="1-р хуудас, нийт 3">
-          <span class="active"></span><span></span><span></span>
+        <div class="page-dots" aria-label="1-р хуудас, нийт 4">
+          <span class="active"></span><span></span><span></span><span></span>
         </div>
       </section>
 
@@ -61,8 +61,8 @@
           <button class="back" id="zodiacBackButton" aria-label="Буцах">←</button>
           <button class="yes continue" id="zodiacContinueButton" aria-label="Цааш үргэлжлүүлэх">→</button>
         </div>
-        <div class="page-dots" aria-label="2-р хуудас, нийт 3">
-          <span></span><span class="active"></span><span></span>
+        <div class="page-dots" aria-label="2-р хуудас, нийт 4">
+          <span></span><span class="active"></span><span></span><span></span>
         </div>
       </section>
 
@@ -82,12 +82,41 @@
         <p class="player-note">Тэмүүлэн гэдэг залууд хэлээд дуртай дуугаа энд оруулж болно шүү хаха ✦</p>
         <iframe class="youtube-player" id="youtubePlayer" title="A-Sound — Хэлээгүй ч" src="https://www.youtube.com/embed/Uv4zZpWDr9c?enablejsapi=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" tabindex="-1" aria-hidden="true"></iframe>
         <p class="final-note hidden" id="finalNote" aria-live="polite">P.S. Инээмсэглэл чинь хамгийн сайхан нь шүү ✦</p>
-        <button class="back farewell-back" id="farewellBackButton" aria-label="Буцах">←</button>
-        <div class="page-dots" aria-label="3-р хуудас, нийт 3">
-          <span></span><span></span><span class="active"></span>
+        <div class="page-actions farewell-actions">
+          <button class="back" id="farewellBackButton" aria-label="Буцах">←</button>
+          <button class="yes continue" id="farewellContinueButton" aria-label="Цаг агаар үзэх">→</button>
+        </div>
+        <div class="page-dots" aria-label="3-р хуудас, нийт 4">
+          <span></span><span></span><span class="active"></span><span></span>
+        </div>
+      </section>
+
+      <section class="weather hidden" id="weather">
+        <div class="weather-icon" id="weatherIcon" aria-hidden="true">☁︎</div>
+        <h2><em>Далианы</em><br />өнөөдрийн цаг агаар</h2>
+        <p class="weather-place">Dalian, Liaoning · <span id="weatherTime">ачаалж байна…</span></p>
+        <div class="weather-now">
+          <div class="weather-temp" id="weatherTemp">--°</div>
+          <div class="weather-desc">
+            <strong id="weatherDesc">Цаг агаар татаж байна</strong>
+            <span id="weatherFeels"></span>
+          </div>
+        </div>
+        <div class="weather-stats">
+          <div><span>Дээд / доод</span><strong id="weatherRange">--° / --°</strong></div>
+          <div><span>Салхи</span><strong id="weatherWind">-- км/ц</strong></div>
+          <div><span>Чийгшил</span><strong id="weatherHumidity">--%</strong></div>
+        </div>
+        <div class="weather-days" id="weatherDays" aria-label="Ойрын өдрүүд"></div>
+        <p class="weather-tip" id="weatherTip"></p>
+        <div class="page-actions">
+          <button class="back" id="weatherBackButton" aria-label="Буцах">←</button>
+        </div>
+        <div class="page-dots" aria-label="4-р хуудас, нийт 4">
+          <span></span><span></span><span></span><span class="active"></span>
         </div>
       </section>
     </main>
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=4"></script>
   </body>
 </html>

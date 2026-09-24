@@ -25,7 +25,7 @@ h1 { font-size: clamp(42px, 8vw, 62px); } h1 em, h2 em { color: var(--rose); fon
 .continue { display: inline-grid; width: 58px; height: 44px; margin-top: 30px; padding: 0; place-items: center; border-radius: 16px; font-size: 28px; line-height: 1; }
 .page-actions { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 28px; }
 .page-actions .continue { margin-top: 0; }
-.zodiac, .farewell { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
+.zodiac, .farewell, .weather { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
 /* Хуудас эргэх шилжилт */
 .card { transition: transform .32s ease-in, opacity .32s ease-in; }
 .card.flip-out { transform: perspective(1200px) rotateY(-70deg); opacity: .4; }
@@ -65,7 +65,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .farewell h2 { margin: 8px 0 24px; font-size: clamp(42px, 7vw, 54px); }
 .star-mark { color: #e9aa78; font-size: .5em; vertical-align: middle; }
 .music-icon { color: #e9aa78; font-family: Caveat, cursive; font-size: 47px; line-height: 1; }
-.farewell-back { margin-top: 25px; }
+.farewell-actions { margin-top: 25px; }
 .music-player { display: flex; align-items: center; gap: 17px; width: 100%; max-width: 420px; margin: 0 auto; padding: 17px; border: 1px solid #f2dbe2; border-radius: 20px; background: linear-gradient(135deg, #fff4f2, #fffaf1); text-align: left; box-shadow: 0 10px 25px #d98ba31c; }
 .record { display: grid; flex: 0 0 77px; width: 77px; height: 77px; place-items: center; border-radius: 50%; background: repeating-radial-gradient(circle, #593f4a 0 2px, #73515e 3px 4px); box-shadow: 0 5px 11px #593f4a36; animation: spin 6s linear infinite paused; }
 .music-player.is-playing .record { animation-play-state: running; }
@@ -77,6 +77,26 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .progress span { transition: width .4s linear; }
 .player-note { max-width: 380px; margin: 16px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 21px; line-height: 1.15; }
 .signature { margin: 18px 0 0; color:#c793a1; font-family:Caveat,cursive; font-size:19px; }
+/* 4-р хуудас: цаг агаар */
+.weather-icon { color: #e9aa78; font-size: 52px; line-height: 1; font-variant-emoji: text; }
+.weather h2 { margin-top: 6px; font-size: clamp(40px, 6.6vw, 52px); }
+.weather-place { margin: 10px 0 18px; color: #bd788c; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; }
+.weather-now { display: flex; align-items: center; justify-content: center; gap: 18px; }
+.weather-temp { font-family: Caveat, cursive; font-size: 84px; line-height: 1; color: var(--rose); font-weight: 700; }
+.weather-temp .deg { font-family: Manrope, sans-serif; font-size: .42em; font-weight: 600; vertical-align: top; margin-left: 2px; }
+.weather-desc { text-align: left; }
+.weather-desc strong { display: block; color: #593f4a; font-size: 17px; }
+.weather-desc span { display: block; margin-top: 3px; color: #a88a93; font-size: 12.5px; }
+.weather-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 420px; margin: 20px auto 0; }
+.weather-stats div { padding: 11px 8px; border: 1px solid #f4dce3; border-radius: 14px; background: #fff9f7; }
+.weather-stats span { display: block; margin-bottom: 4px; color: #bd788c; font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+.weather-stats strong { color: #593f4a; font-size: 14px; }
+.weather-days { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 420px; margin: 10px auto 0; }
+.weather-days div { padding: 10px 6px; border-radius: 14px; background: #fff1f3; color: #765c66; font-size: 12px; }
+.weather-days .day-name { display: block; font-weight: 700; color: #9d7580; }
+.weather-days .day-icon { display: block; margin: 4px 0 2px; color: #e9aa78; font-size: 22px; line-height: 1; font-variant-emoji: text; }
+.weather-tip { max-width: 380px; margin: 18px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 22px; line-height: 1.15; }
+.weather .page-actions { margin-top: 22px; }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: #e86c88; }
 @keyframes charIn { from { opacity:0; transform:translateY(8px) rotate(-4deg); } to { opacity:1; transform:none; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -102,6 +122,9 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
   .page-actions { flex-direction: row; margin-top: 22px; }
   .page-actions .back, .page-actions .continue { width: 54px; height: 42px; }
   .music-player { gap: 13px; padding: 14px; }
+  .weather h2 { font-size: clamp(32px, 9vw, 40px); }
+  .weather-temp { font-size: 68px; }
+  .weather-stats, .weather-days { gap: 6px; }
   .record { flex-basis: 64px; width: 64px; height: 64px; }
   .record span { width: 20px; height: 20px; border-width: 6px; }
 }

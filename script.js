@@ -5,6 +5,9 @@ const zodiacContinueButton = document.querySelector('#zodiacContinueButton');
 const zodiacBackButton = document.querySelector('#zodiacBackButton');
 const farewell = document.querySelector('#farewell');
 const farewellBackButton = document.querySelector('#farewellBackButton');
+const farewellContinueButton = document.querySelector('#farewellContinueButton');
+const weather = document.querySelector('#weather');
+const weatherBackButton = document.querySelector('#weatherBackButton');
 const secretStar = document.querySelector('#secretStar');
 const secretNote = document.querySelector('#secretNote');
 const musicPlayer = document.querySelector('#musicPlayer');
@@ -46,6 +49,68 @@ const loadHoroscope = async () => {
   }
 };
 loadHoroscope();
+
+// Далиан хотын цаг агаар (Open-Meteo, түлхүүр шаардахгүй)
+const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=38.9140&longitude=121.6147'
+  + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day'
+  + '&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&forecast_days=4';
+const WEATHER_CODES = [
+  [[0], 'Цэлмэг', '☀︎'],
+  [[1], 'Ихэвчлэн цэлмэг', '☀︎'],
+  [[2], 'Үүлэрхэг', '⛅︎'],
+  [[3], 'Бүрхэг', '☁︎'],
+  [[45, 48], 'Манантай', '≋'],
+  [[51, 53, 55, 56, 57], 'Шиврээ бороо', '☂︎'],
+  [[61, 63, 65, 66, 67], 'Бороотой', '☂︎'],
+  [[71, 73, 75, 77], 'Цастай', '❄︎'],
+  [[80, 81, 82], 'Аадар бороо', '☂︎'],
+  [[85, 86], 'Цасан шуурга', '❄︎'],
+  [[95, 96, 99], 'Аянга цахилгаантай', '⚡︎'],
+];
+const describeWeather = (code) => {
+  const found = WEATHER_CODES.find(([codes]) => codes.includes(code));
+  return found ? { text: found[1], icon: found[2] } : { text: 'Тодорхойгүй', icon: '☁︎' };
+};
+const weatherTip = (code, temp) => {
+  if (code >= 95) return 'Аянга цахилгаантай байна, гэртээ дулаахан байгаарай ⚡';
+  if (code >= 71 && code <= 86) return 'Цас орж байна, дулаан хувцаслаад болгоомжтой яваарай ❄';
+  if (code >= 51) return 'Бороотой байна, шүхрээ мартуузай ☂';
+  if (temp <= 5) return 'Их хүйтэн байна, дулаан хувцаслаарай';
+  if (temp <= 15) return 'Сэрүүхэн байна, хүрмээ авч гараарай';
+  if (temp >= 28) return 'Халуун байна, ус ихээр уугаарай';
+  return 'Гадаа гоё байна, гараад жаахан алхаарай ✦';
+};
+const loadWeather = async () => {
+  try {
+    const response = await fetch(WEATHER_URL);
+    if (!response.ok) throw new Error(response.status);
+    const { current, daily } = await response.json();
+    const now = describeWeather(current.weather_code);
+    document.querySelector('#weatherIcon').textContent = now.icon;
+    document.querySelector('#weatherTemp').innerHTML = `${Math.round(current.temperature_2m)}<span class="deg">°</span>`;
+    document.querySelector('#weatherDesc').textContent = now.text;
+    document.querySelector('#weatherFeels').textContent = `Мэдрэгдэх: ${Math.round(current.apparent_temperature)}°`;
+    document.querySelector('#weatherTime').textContent = `${current.time.slice(11, 16)}, Далианы цагаар`;
+    document.querySelector('#weatherRange').textContent = `${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°`;
+    document.querySelector('#weatherWind').textContent = `${Math.round(current.wind_speed_10m)} км/ц`;
+    document.querySelector('#weatherHumidity').textContent = `${current.relative_humidity_2m}%`;
+    document.querySelector('#weatherTip').textContent = weatherTip(current.weather_code, current.temperature_2m);
+    const days = document.querySelector('#weatherDays');
+    days.textContent = '';
+    daily.time.slice(1).forEach((date, i) => {
+      const [y, m, d] = date.split('-').map(Number);
+      const info = describeWeather(daily.weather_code[i + 1]);
+      const card = document.createElement('div');
+      card.innerHTML = `<span class="day-name">${WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()]}</span>`
+        + `<span class="day-icon">${info.icon}</span>${Math.round(daily.temperature_2m_max[i + 1])}° / ${Math.round(daily.temperature_2m_min[i + 1])}°`;
+      days.appendChild(card);
+    });
+  } catch {
+    document.querySelector('#weatherDesc').textContent = 'Цаг агаар татаж чадсангүй';
+    document.querySelector('#weatherTime').textContent = 'дахин оролдоорой';
+  }
+};
+loadWeather();
 
 // Гарчгийг үсэг үсгээр гаргах (typewriter)
 const typewrite = (element) => {
@@ -125,6 +190,8 @@ continueButton.addEventListener('click', () => {
 zodiacContinueButton.addEventListener('click', () => goToPage(zodiac, farewell));
 zodiacBackButton.addEventListener('click', () => goToPage(zodiac, welcome, true));
 farewellBackButton.addEventListener('click', () => goToPage(farewell, zodiac, true));
+farewellContinueButton.addEventListener('click', () => goToPage(farewell, weather));
+weatherBackButton.addEventListener('click', () => goToPage(weather, farewell, true));
 
 secretStar.addEventListener('click', () => {
   secretNote.classList.toggle('hidden');
