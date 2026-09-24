@@ -81,6 +81,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .weather-icon { color: #e9aa78; font-size: 52px; line-height: 1; font-variant-emoji: text; }
 .weather h2 { margin-top: 6px; font-size: clamp(40px, 6.6vw, 52px); }
 .weather-place { margin: 10px 0 18px; color: #bd788c; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; }
+.weather-note { max-width: 400px; margin: 0 auto 18px; color: #b07f8e; font-family: Caveat, cursive; font-size: 22px; line-height: 1.15; }
 .weather-now { display: flex; align-items: center; justify-content: center; gap: 18px; }
 .weather-temp { font-family: Caveat, cursive; font-size: 84px; line-height: 1; color: var(--rose); font-weight: 700; }
 .weather-temp .deg { font-family: Manrope, sans-serif; font-size: .42em; font-weight: 600; vertical-align: top; margin-left: 2px; }
