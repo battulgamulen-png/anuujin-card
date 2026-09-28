@@ -336,6 +336,7 @@ const goToPage = (from, to, backward = false) => {
   isFlipping = true;
   card.classList.toggle('backward', backward);
   card.classList.add('flip-out');
+  document.body.dataset.theme = to.id;
   setTimeout(() => {
     from.classList.add('hidden');
     to.classList.remove('hidden');
