@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=5" />
+    <link rel="stylesheet" href="style.css?v=6" />
   </head>
   <body>
     <main class="card" id="card">
@@ -40,6 +40,8 @@
           <g class="lines"><line x1="52" y1="12" x2="58" y2="42" /><line x1="58" y1="42" x2="62" y2="58" /><line x1="62" y1="58" x2="22" y2="104" /><line x1="62" y1="58" x2="100" y2="94" /></g>
           <g class="stars"><circle cx="52" cy="12" r="2.2" /><circle cx="58" cy="42" r="2.8" /><circle cx="62" cy="58" r="3.4" /><circle cx="22" cy="104" r="3" /><circle cx="100" cy="94" r="2.4" /></g>
         </svg>
+        <span class="shooting-star" aria-hidden="true"></span>
+        <span class="shooting-star second" aria-hidden="true"></span>
         <figure class="photo-frame" id="photoFrame" title="Дарж зургийг солино">
           <div class="photo-stack">
             <img class="zodiac-photo" src="anuujin-photo.jpg" alt="Ануужин" />
@@ -47,6 +49,12 @@
           </div>
         </figure>
         <h2><em>Ануужингийн өнөөдрийн зурхайнд</em></h2>
+        <div class="star-ratings hidden" id="starRatings" aria-label="Оддын үнэлгээ">
+          <div><span>Ерөнхий</span><strong id="ratingOverall"></strong></div>
+          <div><span>Сэтгэл санаа</span><strong id="ratingMood"></strong></div>
+          <div><span>Амжилт</span><strong id="ratingSuccess"></strong></div>
+        </div>
+        <p class="lucky hidden" id="lucky">Азын тоо: <strong id="luckyNumber"></strong> · Азын өнгө: <span class="lucky-dot" id="luckyDot"></span><strong id="luckyColor"></strong></p>
         <div class="horoscope-details">
           <section class="horoscope-card">
             <p class="horoscope-title" id="horoscopeTitle">Өнөөдрийн хувьд · 2026.09.23, Лхагва гараг</p>
@@ -71,14 +79,20 @@
         <h2>Өглөө зурхайгаа харвал<br /><em>гоё дуу сонсож эхлүүлэг гээд</em><br />энэ хэсгийг оруулаа&nbsp;<span class="star-mark">✦</span></h2>
         <button class="music-player" id="musicPlayer" type="button" aria-label="A-Sound хамтлагийн Хэлээгүй ч дууг тоглуулах">
           <div class="record" aria-hidden="true"><span></span></div>
+          <div class="tonearm" aria-hidden="true"><span></span></div>
           <div class="track-info">
             <span class="now-playing">now playing</span>
-            <strong>A-Sound — Хэлээгүй ч…</strong>
+            <strong id="songTitle">A-Sound — Хэлээгүй ч…</strong>
             <div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
             <div class="progress"><span id="progressBar"></span></div>
             <span class="song-placeholder" id="songStatus">дарж тоглуулаарай</span>
           </div>
         </button>
+        <div class="playlist-nav" aria-label="Дуу солих">
+          <button class="playlist-button" id="prevSong" type="button" aria-label="Өмнөх дуу">‹</button>
+          <span id="playlistIndex">1 / 4</span>
+          <button class="playlist-button" id="nextSong" type="button" aria-label="Дараагийн дуу">›</button>
+        </div>
         <p class="player-note">Тэмүүлэн гэдэг залууд хэлээд дуртай дуугаа энд оруулж болно шүү хаха ✦</p>
         <iframe class="youtube-player" id="youtubePlayer" title="A-Sound — Хэлээгүй ч" src="https://www.youtube.com/embed/Uv4zZpWDr9c?enablejsapi=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" tabindex="-1" aria-hidden="true"></iframe>
         <p class="final-note hidden" id="finalNote" aria-live="polite">P.S. Инээмсэглэл чинь хамгийн сайхан нь шүү ✦</p>
@@ -122,6 +136,6 @@
         </div>
       </section>
     </main>
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
   </body>
 </html>

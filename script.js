@@ -19,8 +19,15 @@ const welcomeTitle = document.querySelector('#welcomeTitle');
 const photoFrame = document.querySelector('#photoFrame');
 const finalNote = document.querySelector('#finalNote');
 
-// Дуу хэддэх секундээс эхлэхийг энд тохируулна (0 = эхнээс нь)
-const SONG_START_SECONDS = 0;
+// Плейлист: YouTube ID, нэр, эхлэх секунд
+const PLAYLIST = [
+  { id: 'Uv4zZpWDr9c', title: 'A-Sound — Хэлээгүй ч…', start: 0 },
+  { id: 'NXolApL1GIo', title: 'Becca — Comfy', start: 0 },
+  { id: 'lbCA9D1X7to', title: 'Magnolian & NMN — Өөр хүмүүс', start: 0 },
+  { id: 'v22ASLZ5o4M', title: 'luuya — Гаригийн өдөр', start: 0 },
+];
+let songIndex = 0;
+const SONG_START_SECONDS = PLAYLIST[0].start;
 let player = null;
 let isSongPlaying = false;
 let hasStarted = false;
@@ -32,6 +39,17 @@ let progressTimer = null;
 const horoscopeTitle = document.querySelector('#horoscopeTitle');
 const horoscopeText = document.querySelector('#horoscopeText');
 const WEEKDAYS = ['Ням', 'Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба'];
+// Текстийг өгүүлбэр бүрээр зөөлөн гаргана
+const revealLines = (element, text) => {
+  element.textContent = '';
+  text.match(/[^.!?]+[.!?]*\s*/g).forEach((sentence, i) => {
+    const span = document.createElement('span');
+    span.className = 'line';
+    span.style.setProperty('--i', i);
+    span.textContent = sentence;
+    element.appendChild(span);
+  });
+};
 const loadHoroscope = async () => {
   try {
     const response = await fetch(`horoscope.json?t=${Date.now()}`, { cache: 'no-store' });
@@ -43,8 +61,21 @@ const loadHoroscope = async () => {
     const [year, month, day] = entry.date.split('-').map(Number);
     const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
     horoscopeTitle.textContent = `Өнөөдрийн хувьд · ${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}, ${weekday} гараг`;
-    horoscopeText.textContent = entry.text;
-    if (entry.advice) document.querySelector('#starText').textContent = entry.advice;
+    revealLines(horoscopeText, entry.text);
+    if (entry.advice) revealLines(document.querySelector('#starText'), entry.advice);
+    if (entry.ratings) {
+      const stars = (n) => '★'.repeat(n) + `<span class="off">${'★'.repeat(5 - n)}</span>`;
+      document.querySelector('#ratingOverall').innerHTML = stars(entry.ratings.overall);
+      document.querySelector('#ratingMood').innerHTML = stars(entry.ratings.mood);
+      document.querySelector('#ratingSuccess').innerHTML = stars(entry.ratings.success);
+      document.querySelector('#starRatings').classList.remove('hidden');
+    }
+    if (entry.lucky) {
+      document.querySelector('#luckyNumber').textContent = entry.lucky.number;
+      document.querySelector('#luckyColor').textContent = entry.lucky.color;
+      document.querySelector('#luckyDot').style.setProperty('--lucky', entry.lucky.hex);
+      document.querySelector('#lucky').classList.remove('hidden');
+    }
   } catch {
     // Ачаалагдахгүй бол HTML доторх текст хэвээр үлдэнэ
   }
@@ -377,6 +408,7 @@ const setPlaying = (playing) => {
   isSongPlaying = playing;
   musicPlayer.classList.toggle('is-playing', playing);
   if (playing) startNotes(); else stopNotes();
+  card.classList.toggle('music-on', playing);
   songStatus.textContent = playing ? 'одоо тоглож байна' : 'дарж тоглуулаарай';
 };
 
@@ -406,10 +438,33 @@ const showFallbackPlayer = () => {
 const playSong = () => {
   if (!hasStarted) {
     hasStarted = true;
-    player.seekTo(SONG_START_SECONDS, true);
+    player.seekTo(PLAYLIST[songIndex].start, true);
   }
   player.playVideo();
 };
+
+// Дуу солих
+const songTitle = document.querySelector('#songTitle');
+const playlistIndex = document.querySelector('#playlistIndex');
+const changeSong = (step) => {
+  songIndex = (songIndex + step + PLAYLIST.length) % PLAYLIST.length;
+  const song = PLAYLIST[songIndex];
+  songTitle.textContent = song.title;
+  playlistIndex.textContent = `${songIndex + 1} / ${PLAYLIST.length}`;
+  progressBar.style.width = '0';
+  hasStarted = true;
+  if (!playerReady) {
+    youtubePlayer.src = `https://www.youtube.com/embed/${song.id}?enablejsapi=1&playsinline=1&rel=0&start=${song.start}`;
+    return;
+  }
+  if (isSongPlaying) player.loadVideoById({ videoId: song.id, startSeconds: song.start });
+  else {
+    player.cueVideoById({ videoId: song.id, startSeconds: song.start });
+    songStatus.textContent = 'дарж тоглуулаарай';
+  }
+};
+document.querySelector('#prevSong').addEventListener('click', () => changeSong(-1));
+document.querySelector('#nextSong').addEventListener('click', () => changeSong(1));
 
 // YouTube IFrame API: дуу тоглох, зогсох төлөвийг custom карттай тааруулна
 window.onYouTubeIframeAPIReady = () => {

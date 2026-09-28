@@ -40,6 +40,22 @@ h1 { font-size: clamp(42px, 8vw, 62px); } h1 em, h2 em { color: var(--rose); fon
 /* Зурхайн хуудасны элементүүд дараалан гарч ирнэ */
 .zodiac h2, .zodiac .horoscope-card, .zodiac .page-actions { animation: riseIn .55s cubic-bezier(.2,.75,.3,1) both; }
 .zodiac h2 { animation-delay: .12s; } .zodiac .horoscope-card:nth-child(1) { animation-delay: .24s; } .zodiac .horoscope-card:nth-child(2) { animation-delay: .36s; } .zodiac .page-actions { animation-delay: .46s; }
+/* Одон буух */
+.shooting-star { position: absolute; top: 8%; left: 60%; width: 90px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #e9aa78, transparent); transform: rotate(35deg); opacity: 0; pointer-events: none; animation: shoot 9s linear infinite; animation-delay: 2s; }
+.shooting-star::before { content: ""; position: absolute; left: -3px; top: -2px; width: 6px; height: 6px; border-radius: 50%; background: #fff3d6; box-shadow: 0 0 10px 3px #e9aa78aa; }
+.shooting-star.second { top: 40%; left: 5%; width: 70px; animation-duration: 13s; animation-delay: 7s; }
+@keyframes shoot { 0% { opacity: 0; transform: rotate(35deg) translateX(0); } 3% { opacity: 1; } 12% { opacity: 0; transform: rotate(35deg) translateX(220px); } 100% { opacity: 0; transform: rotate(35deg) translateX(220px); } }
+/* Оддын үнэлгээ, азын тоо */
+.star-ratings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 440px; margin: 18px auto 0; animation: riseIn .55s cubic-bezier(.2,.75,.3,1) both; animation-delay: .2s; }
+.star-ratings div { padding: 10px 6px; border: 1px solid #f4dce3; border-radius: 14px; background: #fff9f7; }
+.star-ratings > div > span { display: block; margin-bottom: 3px; color: #bd788c; font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+.star-ratings strong { color: #e9aa78; font-size: 14px; letter-spacing: 0; white-space: nowrap; }
+.star-ratings strong .off { display: inline; color: #ead5d9; }
+.lucky { margin: 10px 0 0; color: #9d7580; font-size: 12.5px; animation: riseIn .55s cubic-bezier(.2,.75,.3,1) both; animation-delay: .3s; }
+.lucky strong { color: #593f4a; }
+.lucky-dot { display: inline-block; width: 11px; height: 11px; margin: 0 5px -1px 0; border-radius: 50%; border: 1px solid #0000001a; background: var(--lucky, #e86c88); }
+/* Зурхайн текст мөр мөрөөр */
+.horoscope-card .line { display: inline; opacity: 0; animation: fadeIn .6s ease both; animation-delay: calc(.35s + var(--i) * .22s); }
 /* Мэлхийн одны зураг */
 .constellation { position: absolute; top: -18px; right: 8px; width: 92px; pointer-events: none; opacity: .75; }
 .constellation .lines line { stroke: #e9aa78; stroke-width: 1; stroke-dasharray: 3 3; opacity: .6; }
@@ -69,8 +85,19 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .music-player { display: flex; align-items: center; gap: 17px; width: 100%; max-width: 420px; margin: 0 auto; padding: 17px; border: 1px solid #f2dbe2; border-radius: 20px; background: linear-gradient(135deg, #fff4f2, #fffaf1); text-align: left; box-shadow: 0 10px 25px #d98ba31c; }
 .record { display: grid; flex: 0 0 77px; width: 77px; height: 77px; place-items: center; border-radius: 50%; background: repeating-radial-gradient(circle, #593f4a 0 2px, #73515e 3px 4px); box-shadow: 0 5px 11px #593f4a36; animation: spin 6s linear infinite paused; }
 .music-player.is-playing .record { animation-play-state: running; }
+.music-player { position: relative; }
+.tonearm { position: absolute; top: 10px; left: 92px; width: 8px; height: 62px; transform-origin: 4px 4px; transform: rotate(20deg); transition: transform .8s cubic-bezier(.4,0,.2,1); z-index: 2; filter: drop-shadow(0 2px 3px #593f4a33); }
+.tonearm::before { content: ""; position: absolute; top: -6px; left: -6px; width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #d7b3bf, #9d7580); }
+.tonearm span { position: absolute; top: 8px; left: 1.5px; width: 5px; height: 52px; border-radius: 3px; background: linear-gradient(#b995a3, #7d5f6a); }
+.tonearm span::after { content: ""; position: absolute; bottom: -6px; left: -4px; width: 13px; height: 12px; border-radius: 3px; background: #593f4a; }
+.music-player.is-playing .tonearm { transform: rotate(-14deg); }
 .record span { width: 23px; height: 23px; border: 7px solid #e86c88; border-radius: 50%; background: #fff8f3; }
 .track-info { min-width: 0; flex: 1; }.now-playing { display: block; margin-bottom: 4px; color: #bd788c; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }.track-info strong { display: block; color: #593f4a; font-size: 14px; }.progress { height: 4px; margin: 12px 0 7px; overflow: hidden; border-radius: 99px; background: #ead5d9; }.progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: #e86c88; }.song-placeholder { color: #a88a93; font-size: 11px; }
+.playlist-nav { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px; color: #a88a93; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.playlist-button { width: 30px; height: 30px; padding: 0; border-radius: 50%; background: #fff1f3; color: #9d7580; font-size: 20px; line-height: 1; }
+/* Дуу тоглох үед карт амьсгалах */
+.card.music-on { animation: breathe 7s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { background: #fffdfb; box-shadow: 0 24px 70px #a3557030; } 50% { background: #fff4f1; box-shadow: 0 24px 80px #e86c8840; } }
 .equalizer { display: flex; align-items: end; gap: 3px; height: 17px; margin: 5px 0 -3px; }.equalizer span { width: 3px; border-radius: 9px; background: #e86c88; animation: equalize .8s ease-in-out infinite alternate paused; }.music-player.is-playing .equalizer span { animation-play-state: running; }.equalizer span:nth-child(1) { height: 7px; }.equalizer span:nth-child(2) { height: 15px; animation-delay: .2s; }.equalizer span:nth-child(3) { height: 10px; animation-delay: .45s; }.equalizer span:nth-child(4) { height: 13px; animation-delay: .1s; }
 .youtube-player { position: absolute; top: 0; left: 0; width: 320px; height: 180px; border: 0; opacity: 0; pointer-events: none; clip-path: inset(50%); }
 .youtube-player.is-visible { position: static; display: block; width: 100%; max-width: 420px; height: auto; aspect-ratio: 16 / 9; margin: 12px auto 0; border-radius: 16px; opacity: 1; pointer-events: auto; clip-path: none; box-shadow: 0 10px 25px #a3557030; }
@@ -152,6 +179,9 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
   .page-actions { flex-direction: row; margin-top: 22px; }
   .page-actions .back, .page-actions .continue { width: 54px; height: 42px; }
   .music-player { gap: 13px; padding: 14px; }
+  .tonearm { left: 76px; top: 8px; height: 52px; }
+  .tonearm span { height: 42px; }
+  .star-ratings { gap: 6px; } .star-ratings strong { font-size: 13px; }
   .weather h2 { font-size: clamp(32px, 9vw, 40px); }
   .weather-temp { font-size: 68px; }
   .weather-stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }

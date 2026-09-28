@@ -46,6 +46,8 @@ def parse(page):
             "label": head_text.split(" ")[0],
             "text": text,
             "advice": star_advice(text, date),
+            "ratings": star_ratings(text, date),
+            "lucky": lucky(date),
         })
     return days
 
@@ -84,6 +86,35 @@ CLOSINGS = [
     "Одод хэзээ ч худлаа хэлдэггүй хха",
     "Тэгээд өдөржин инээмсэглээрэй ✦",
 ]
+
+
+POSITIVE = ("сайн", "амжилт", "аз ", "таатай", "боломж", "урам", "эрч хүч", "тааламжтай", "гайхалтай", "баяр", "тааламж", "олз")
+NEGATIVE = ("бүү", "болгоомж", "эрсдэл", "хэрэггүй", "зайлсхий", "хазай", "саад", "сорилт", "хойшлуул", "маргаан", "сөрөг", "буруу")
+COLORS = [("ягаан", "#e86c88"), ("цэнхэр", "#6fa8dc"), ("ногоон", "#7bc48a"), ("шар", "#f0c453"),
+          ("улбар шар", "#e9aa78"), ("нил", "#a98bd6"), ("цагаан", "#f4f1ee"), ("улаан", "#d9534f")]
+
+
+def clamp(value):
+    return max(1, min(5, value))
+
+
+def star_ratings(text, date):
+    """Зурхайн үгсээс 1-5 оноотой гурван үнэлгээ гаргана."""
+    lowered = text.lower()
+    day_number = int(date.replace("-", ""))
+    pos = sum(w in lowered for w in POSITIVE)
+    neg = sum(w in lowered for w in NEGATIVE)
+    base = 3 + (day_number % 2)
+    overall = clamp(base + min(pos, 2) - min(neg, 2))
+    mood = clamp(base + (1 if any(w in lowered for w in ("тайван", "амар", "сэтгэл", "баяр")) else 0) - (1 if any(w in lowered for w in ("зовоо", "маргаан", "стресс", "уур")) else 0) + ((day_number // 7) % 2) - 1 + 1)
+    success = clamp(base + (1 if any(w in lowered for w in ("ажил", "амжилт", "үр дүн", "боломж", "орлого")) else 0) - (1 if any(w in lowered for w in ("хазай", "саад", "хойшлуул", "эрсдэл")) else 0))
+    return {"overall": overall, "mood": mood, "success": success}
+
+
+def lucky(date):
+    day_number = int(date.replace("-", ""))
+    name, hex_code = COLORS[(day_number * 7) % len(COLORS)]
+    return {"number": (day_number * 3) % 9 + 1, "color": name, "hex": hex_code}
 
 
 def star_advice(text, date):
