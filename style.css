@@ -115,28 +115,25 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .weather-desc { text-align: left; }
 .weather-desc strong { display: block; color: #593f4a; font-size: 17px; }
 .weather-desc span { display: block; margin-top: 3px; color: #a88a93; font-size: 12.5px; }
-.weather-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 420px; margin: 20px auto 0; }
-.weather-stats div { padding: 11px 8px; border: 1px solid #f4dce3; border-radius: 14px; background: #fff9f7; }
-.weather-stats span { display: block; margin-bottom: 4px; color: #bd788c; font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
-.weather-stats strong { color: #593f4a; font-size: 14px; }
-.weather-days { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 420px; margin: 10px auto 0; }
-.weather-days div { padding: 10px 6px; border-radius: 14px; background: #fff1f3; color: #765c66; font-size: 12px; }
-.weather-days .day-name { display: block; font-weight: 700; color: #9d7580; }
-.weather-days .day-icon { display: block; margin: 4px 0 2px; color: #e9aa78; font-size: 22px; line-height: 1; font-variant-emoji: text; }
 .weather-tip { max-width: 380px; margin: 18px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 22px; line-height: 1.15; }
 .weather .page-actions { margin-top: 22px; }
 .weather > *:not(.weather-sky) { position: relative; z-index: 1; }
-.weather-compare { margin: 12px 0 0; color: #9d7580; font-size: 13px; }
-.weather-compare strong { color: #593f4a; }
-.weather-outfit { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 420px; margin: 12px auto 0; }
-.weather-outfit span { padding: 5px 11px; border-radius: 999px; background: #fff1f3; color: #9d7580; font-size: 12px; font-weight: 600; animation: riseIn .5s both; }
-.weather-outfit span:nth-child(2) { animation-delay: .08s; } .weather-outfit span:nth-child(3) { animation-delay: .16s; } .weather-outfit span:nth-child(4) { animation-delay: .24s; }
-.weather-hours { display: flex; gap: 6px; max-width: 420px; margin: 14px auto 0; padding: 4px 2px; overflow-x: auto; scrollbar-width: none; }
+.weather-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 16px auto 0; color: #765c66; font-size: 12.5px; }
+.weather-meta span { white-space: nowrap; }
+.weather-meta strong { color: #593f4a; font-weight: 600; }
+.weather-compare { margin: 8px 0 0; color: #9d7580; font-size: 12.5px; }
+.weather-outfit { max-width: 380px; margin: 14px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 21px; line-height: 1.15; }
+.weather-hours { display: flex; justify-content: flex-start; gap: 2px; max-width: 420px; margin: 18px auto 0; padding: 10px 6px; border-top: 1px dashed #efadc061; border-bottom: 1px dashed #efadc061; overflow-x: auto; scrollbar-width: none; }
 .weather-hours::-webkit-scrollbar { display: none; }
-.weather-hours div { flex: 0 0 52px; padding: 8px 4px; border: 1px solid #f4dce3; border-radius: 12px; background: #fff9f7; color: #765c66; font-size: 11px; }
-.weather-hours .hour-time { display: block; color: #bd788c; font-weight: 700; font-size: 10px; }
-.weather-hours .hour-icon { display: block; margin: 3px 0 1px; color: #e9aa78; font-size: 18px; line-height: 1; font-variant-emoji: text; }
+.weather-hours div { flex: 0 0 52px; color: #765c66; font-size: 11px; }
+.weather-hours div:first-child { color: var(--rose); }
+.weather-hours .hour-time { display: block; font-size: 10px; font-weight: 700; letter-spacing: .3px; }
+.weather-hours .hour-icon { display: block; margin: 4px 0 2px; color: #e9aa78; font-size: 17px; line-height: 1; font-variant-emoji: text; }
 .weather-hours strong { color: #593f4a; font-size: 13px; }
+.weather-days { display: flex; justify-content: center; gap: 26px; margin: 12px auto 0; color: #765c66; font-size: 12px; }
+.weather-days .day-name { display: block; font-weight: 700; color: #9d7580; font-size: 11px; }
+.weather-days .day-icon { display: block; margin: 3px 0 1px; color: #e9aa78; font-size: 20px; line-height: 1; font-variant-emoji: text; }
+.weather-compare strong { color: #593f4a; }
 /* Цаг агаарын нөхцөлөөс хамаарсан амьд дэвсгэр */
 .weather-sky { position: absolute; inset: -20px -30px; overflow: hidden; pointer-events: none; z-index: 0; border-radius: 24px; }
 .weather-sky .sun { position: absolute; top: -70px; right: -70px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, #ffe7b5 0 22%, transparent 60%); }
@@ -184,8 +181,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
   .star-ratings { gap: 6px; } .star-ratings strong { font-size: 13px; }
   .weather h2 { font-size: clamp(32px, 9vw, 40px); }
   .weather-temp { font-size: 68px; }
-  .weather-stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .weather-days { gap: 6px; }
+  .weather-days { gap: 18px; }
   .record { flex-basis: 64px; width: 64px; height: 64px; }
   .record span { width: 20px; height: 20px; border-width: 6px; }
 }

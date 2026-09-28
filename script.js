@@ -228,20 +228,17 @@ const loadWeather = async () => {
     document.querySelector('#weatherDesc').textContent = now.text;
     document.querySelector('#weatherFeels').textContent = `Мэдрэгдэх: ${Math.round(current.apparent_temperature)}°`;
     document.querySelector('#weatherTime').textContent = `${current.time.slice(11, 16)}, Далианы цагаар`;
-    document.querySelector('#weatherRange').textContent = `${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°`;
-    document.querySelector('#weatherWind').textContent = `${Math.round(current.wind_speed_10m)} км/ц`;
-    document.querySelector('#weatherHumidity').textContent = `${current.relative_humidity_2m}%`;
-    document.querySelector('#weatherSun').textContent = `↑ ${daily.sunrise[0].slice(11, 16)}  ↓ ${daily.sunset[0].slice(11, 16)}`;
+    document.querySelector('#weatherMeta').innerHTML = [
+      `Дээд <strong>${Math.round(daily.temperature_2m_max[0])}°</strong> · доод <strong>${Math.round(daily.temperature_2m_min[0])}°</strong>`,
+      `Салхи <strong>${Math.round(current.wind_speed_10m)} км/ц</strong>`,
+      `Чийгшил <strong>${current.relative_humidity_2m}%</strong>`,
+      `Нар <strong>${daily.sunrise[0].slice(11, 16)} – ${daily.sunset[0].slice(11, 16)}</strong>`,
+    ].map((item) => `<span>${item}</span>`).join('');
     document.querySelector('#weatherTip').textContent = weatherTip(current.weather_code, current.temperature_2m);
     paintSky(now.sky, current.is_day === 1);
 
-    const outfit = document.querySelector('#weatherOutfit');
-    outfit.textContent = '';
-    outfitFor(current.weather_code, current.temperature_2m, current.wind_speed_10m).forEach((item) => {
-      const chip = document.createElement('span');
-      chip.textContent = item;
-      outfit.appendChild(chip);
-    });
+    const outfit = outfitFor(current.weather_code, current.temperature_2m, current.wind_speed_10m);
+    document.querySelector('#weatherOutfit').textContent = `Өнөөдөр: ${outfit.join(', ').toLowerCase()}`;
 
     // Ойрын 8 цаг
     const hours = document.querySelector('#weatherHours');
