@@ -44,6 +44,7 @@ const loadHoroscope = async () => {
     const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
     horoscopeTitle.textContent = `Өнөөдрийн хувьд · ${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}, ${weekday} гараг`;
     horoscopeText.textContent = entry.text;
+    if (entry.advice) document.querySelector('#starText').textContent = entry.advice;
   } catch {
     // Ачаалагдахгүй бол HTML доторх текст хэвээр үлдэнэ
   }
