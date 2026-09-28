@@ -24,7 +24,6 @@ const PLAYLIST = [
   { id: 'Uv4zZpWDr9c', title: 'A-Sound — Хэлээгүй ч…', start: 0 },
   { id: 'NXolApL1GIo', title: 'Becca — Comfy', start: 0 },
   { id: 'lbCA9D1X7to', title: 'Magnolian & NMN — Өөр хүмүүс', start: 0 },
-  { id: 'v22ASLZ5o4M', title: 'luuya — Гаригийн өдөр', start: 0 },
 ];
 let songIndex = 0;
 const SONG_START_SECONDS = PLAYLIST[0].start;
