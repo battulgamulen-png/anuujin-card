@@ -53,23 +53,26 @@ loadHoroscope();
 // Далиан хотын цаг агаар (Open-Meteo, түлхүүр шаардахгүй)
 const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=38.9140&longitude=121.6147'
   + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day'
-  + '&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FShanghai&forecast_days=4';
+  + '&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset'
+  + '&timezone=Asia%2FShanghai&forecast_days=4';
+const UB_WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=47.9184&longitude=106.9177'
+  + '&current=temperature_2m,weather_code&timezone=Asia%2FUlaanbaatar';
 const WEATHER_CODES = [
-  [[0], 'Цэлмэг', '☀︎'],
-  [[1], 'Ихэвчлэн цэлмэг', '☀︎'],
-  [[2], 'Үүлэрхэг', '⛅︎'],
-  [[3], 'Бүрхэг', '☁︎'],
-  [[45, 48], 'Манантай', '≋'],
-  [[51, 53, 55, 56, 57], 'Шиврээ бороо', '☂︎'],
-  [[61, 63, 65, 66, 67], 'Бороотой', '☂︎'],
-  [[71, 73, 75, 77], 'Цастай', '❄︎'],
-  [[80, 81, 82], 'Аадар бороо', '☂︎'],
-  [[85, 86], 'Цасан шуурга', '❄︎'],
-  [[95, 96, 99], 'Аянга цахилгаантай', '⚡︎'],
+  [[0], 'Цэлмэг', '☀︎', 'sun'],
+  [[1], 'Ихэвчлэн цэлмэг', '☀︎', 'sun'],
+  [[2], 'Үүлэрхэг', '⛅︎', 'clouds'],
+  [[3], 'Бүрхэг', '☁︎', 'clouds'],
+  [[45, 48], 'Манантай', '≋', 'fog'],
+  [[51, 53, 55, 56, 57], 'Шиврээ бороо', '☂︎', 'rain'],
+  [[61, 63, 65, 66, 67], 'Бороотой', '☂︎', 'rain'],
+  [[71, 73, 75, 77], 'Цастай', '❄︎', 'snow'],
+  [[80, 81, 82], 'Аадар бороо', '☂︎', 'rain'],
+  [[85, 86], 'Цасан шуурга', '❄︎', 'snow'],
+  [[95, 96, 99], 'Аянга цахилгаантай', '⚡︎', 'rain'],
 ];
 const describeWeather = (code) => {
   const found = WEATHER_CODES.find(([codes]) => codes.includes(code));
-  return found ? { text: found[1], icon: found[2] } : { text: 'Тодорхойгүй', icon: '☁︎' };
+  return found ? { text: found[1], icon: found[2], sky: found[3] } : { text: 'Тодорхойгүй', icon: '☁︎', sky: 'clouds' };
 };
 const weatherTip = (code, temp) => {
   if (code >= 95) return 'Аянга цахилгаантай байна, гэртээ дулаахан байгаарай ⚡';
@@ -80,21 +83,146 @@ const weatherTip = (code, temp) => {
   if (temp >= 28) return 'Халуун байна, ус ихээр уугаарай';
   return 'Гадаа гоё байна, гараад жаахан алхаарай ✦';
 };
+// Хувцасны зөвлөгөө: температур, нөхцөлөөс хамаарна
+const outfitFor = (code, temp, wind) => {
+  const items = [];
+  if (temp <= 0) items.push('Дулаан куртка', 'Ороолт', 'Малгай, бээлий');
+  else if (temp <= 10) items.push('Куртка', 'Зузаан цамц', 'Ороолт');
+  else if (temp <= 17) items.push('Хүрэм', 'Урт ханцуйтай цамц');
+  else if (temp <= 24) items.push('Хөнгөн хүрэм', 'Футболк');
+  else items.push('Хөнгөн хувцас', 'Нарны шил');
+  if (code >= 51 && code <= 67 || code >= 80) items.push('Шүхэр ☂');
+  if (code >= 71 && code <= 86) items.push('Гулгахгүй гутал');
+  if (wind >= 30) items.push('Салхинаас хамгаалах хүрэм');
+  return items.slice(0, 4);
+};
+
+// Нөхцөлөөс хамаарсан амьд дэвсгэр
+const weatherSky = document.querySelector('#weatherSky');
+const makeParticles = (className, count, make) => {
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('span');
+    el.className = className;
+    make(el, i);
+    weatherSky.appendChild(el);
+  }
+};
+const paintSky = (sky, isDay) => {
+  weatherSky.textContent = '';
+  weather.classList.toggle('is-night', !isDay);
+  if (!isDay) {
+    const moon = document.createElement('div');
+    moon.className = 'moon';
+    weatherSky.appendChild(moon);
+    makeParticles('night-star', 14, (el) => {
+      el.textContent = Math.random() > 0.5 ? '✦' : '✧';
+      el.style.setProperty('--x', `${random(2, 96)}%`);
+      el.style.setProperty('--y', `${random(2, 60)}%`);
+      el.style.setProperty('--s', `${random(9, 18)}px`);
+      el.style.setProperty('--delay', `${random(0, 2.5)}s`);
+    });
+  } else if (sky === 'sun') {
+    const sun = document.createElement('div');
+    sun.className = 'sun';
+    const rays = document.createElement('div');
+    rays.className = 'rays';
+    weatherSky.append(sun, rays);
+  }
+  if (sky === 'clouds' || sky === 'rain' || sky === 'snow') {
+    makeParticles('cloud', sky === 'clouds' ? 3 : 2, (el, i) => {
+      el.style.setProperty('--y', `${[3, 14, 26][i]}%`);
+      el.style.setProperty('--d', `${[52, 70, 62][i]}s`);
+      el.style.setProperty('--delay', `${[-10, -35, -50][i]}s`);
+      el.style.transform = `scale(${[1, .7, .85][i]})`;
+    });
+  }
+  if (sky === 'rain') {
+    makeParticles('drop', 36, (el) => {
+      el.style.setProperty('--x', `${random(0, 100)}%`);
+      el.style.setProperty('--d', `${random(0.9, 1.6)}s`);
+      el.style.setProperty('--delay', `${random(-2, 0)}s`);
+    });
+  }
+  if (sky === 'snow') {
+    makeParticles('flake', 26, (el) => {
+      el.textContent = '❄';
+      el.style.setProperty('--x', `${random(0, 100)}%`);
+      el.style.setProperty('--s', `${random(8, 16)}px`);
+      el.style.setProperty('--d', `${random(6, 11)}s`);
+      el.style.setProperty('--delay', `${random(-10, 0)}s`);
+    });
+  }
+  if (sky === 'fog') {
+    makeParticles('fog', 4, (el, i) => {
+      el.style.setProperty('--y', `${12 + i * 22}%`);
+      el.style.setProperty('--d', `${6 + i * 2}s`);
+    });
+  }
+};
+
+// Температур 0-оос тоолж гарч ирнэ
+const weatherTemp = document.querySelector('#weatherTemp');
+let targetTemp = null;
+let tempShown = false;
+const renderTemp = (value) => {
+  weatherTemp.innerHTML = `${Math.round(value)}<span class="deg">°</span>`;
+};
+const animateTemp = () => {
+  if (targetTemp === null) return;
+  const start = performance.now();
+  const duration = 1100;
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    renderTemp(targetTemp * eased);
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+};
+const showWeatherPage = () => {
+  tempShown = true;
+  animateTemp();
+};
+
 const loadWeather = async () => {
   try {
-    const response = await fetch(WEATHER_URL);
-    if (!response.ok) throw new Error(response.status);
-    const { current, daily } = await response.json();
+    const [dalianRes, ubRes] = await Promise.all([fetch(WEATHER_URL), fetch(UB_WEATHER_URL).catch(() => null)]);
+    if (!dalianRes.ok) throw new Error(dalianRes.status);
+    const { current, hourly, daily } = await dalianRes.json();
     const now = describeWeather(current.weather_code);
-    document.querySelector('#weatherIcon').textContent = now.icon;
-    document.querySelector('#weatherTemp').innerHTML = `${Math.round(current.temperature_2m)}<span class="deg">°</span>`;
+    document.querySelector('#weatherIcon').textContent = current.is_day ? now.icon : '☾';
+    targetTemp = current.temperature_2m;
+    if (tempShown) animateTemp(); else renderTemp(targetTemp);
     document.querySelector('#weatherDesc').textContent = now.text;
     document.querySelector('#weatherFeels').textContent = `Мэдрэгдэх: ${Math.round(current.apparent_temperature)}°`;
     document.querySelector('#weatherTime').textContent = `${current.time.slice(11, 16)}, Далианы цагаар`;
     document.querySelector('#weatherRange').textContent = `${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°`;
     document.querySelector('#weatherWind').textContent = `${Math.round(current.wind_speed_10m)} км/ц`;
     document.querySelector('#weatherHumidity').textContent = `${current.relative_humidity_2m}%`;
+    document.querySelector('#weatherSun').textContent = `↑ ${daily.sunrise[0].slice(11, 16)}  ↓ ${daily.sunset[0].slice(11, 16)}`;
     document.querySelector('#weatherTip').textContent = weatherTip(current.weather_code, current.temperature_2m);
+    paintSky(now.sky, current.is_day === 1);
+
+    const outfit = document.querySelector('#weatherOutfit');
+    outfit.textContent = '';
+    outfitFor(current.weather_code, current.temperature_2m, current.wind_speed_10m).forEach((item) => {
+      const chip = document.createElement('span');
+      chip.textContent = item;
+      outfit.appendChild(chip);
+    });
+
+    // Ойрын 8 цаг
+    const hours = document.querySelector('#weatherHours');
+    hours.textContent = '';
+    const startIndex = Math.max(0, hourly.time.findIndex((t) => t >= current.time.slice(0, 13)));
+    hourly.time.slice(startIndex, startIndex + 8).forEach((time, i) => {
+      const info = describeWeather(hourly.weather_code[startIndex + i]);
+      const cell = document.createElement('div');
+      cell.innerHTML = `<span class="hour-time">${i === 0 ? 'Одоо' : time.slice(11, 16)}</span>`
+        + `<span class="hour-icon">${info.icon}</span><strong>${Math.round(hourly.temperature_2m[startIndex + i])}°</strong>`;
+      hours.appendChild(cell);
+    });
+
     const days = document.querySelector('#weatherDays');
     days.textContent = '';
     daily.time.slice(1).forEach((date, i) => {
@@ -105,6 +233,14 @@ const loadWeather = async () => {
         + `<span class="day-icon">${info.icon}</span>${Math.round(daily.temperature_2m_max[i + 1])}° / ${Math.round(daily.temperature_2m_min[i + 1])}°`;
       days.appendChild(card);
     });
+
+    // Улаанбаатартай харьцуулах
+    if (ubRes && ubRes.ok) {
+      const ub = (await ubRes.json()).current;
+      const diff = Math.round(current.temperature_2m - ub.temperature_2m);
+      const compare = diff > 0 ? `Далианд ${diff}° дулаан байна` : diff < 0 ? `Улаанбаатарт ${-diff}° дулаан байна` : 'хоёр хотод адилхан байна';
+      document.querySelector('#weatherCompare').innerHTML = `Улаанбаатарт одоо <strong>${Math.round(ub.temperature_2m)}°</strong>, ${describeWeather(ub.weather_code).text.toLowerCase()} · ${compare}`;
+    }
   } catch {
     document.querySelector('#weatherDesc').textContent = 'Цаг агаар татаж чадсангүй';
     document.querySelector('#weatherTime').textContent = 'дахин оролдоорой';
@@ -190,7 +326,10 @@ continueButton.addEventListener('click', () => {
 zodiacContinueButton.addEventListener('click', () => goToPage(zodiac, farewell));
 zodiacBackButton.addEventListener('click', () => goToPage(zodiac, welcome, true));
 farewellBackButton.addEventListener('click', () => goToPage(farewell, zodiac, true));
-farewellContinueButton.addEventListener('click', () => goToPage(farewell, weather));
+farewellContinueButton.addEventListener('click', () => {
+  goToPage(farewell, weather);
+  setTimeout(showWeatherPage, 340);
+});
 weatherBackButton.addEventListener('click', () => goToPage(weather, farewell, true));
 
 secretStar.addEventListener('click', () => {
