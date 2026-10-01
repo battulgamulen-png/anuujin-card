@@ -109,15 +109,6 @@ const describeWeather = (code) => {
   const found = WEATHER_CODES.find(([codes]) => codes.includes(code));
   return found ? { text: found[1], icon: found[2], sky: found[3] } : { text: 'Тодорхойгүй', icon: '☁︎', sky: 'clouds' };
 };
-const weatherTip = (code, temp) => {
-  if (code >= 95) return 'Аянга цахилгаантай байна, гэртээ дулаахан байгаарай ⚡';
-  if (code >= 71 && code <= 86) return 'Цас орж байна, дулаан хувцаслаад болгоомжтой яваарай ❄';
-  if (code >= 51) return 'Бороотой байна, шүхрээ мартуузай ☂';
-  if (temp <= 5) return 'Их хүйтэн байна, дулаан хувцаслаарай';
-  if (temp <= 15) return 'Сэрүүхэн байна, хүрмээ авч гараарай';
-  if (temp >= 28) return 'Халуун байна, ус ихээр уугаарай';
-  return 'Гадаа гоё байна, гараад жаахан алхаарай ✦';
-};
 // Хувцасны зөвлөгөө: температур, нөхцөлөөс хамаарна
 const outfitFor = (code, temp, wind) => {
   const items = [];
@@ -237,7 +228,6 @@ const loadWeather = async () => {
       `Чийгшил <strong>${current.relative_humidity_2m}%</strong>`,
       `Нар <strong>${daily.sunrise[0].slice(11, 16)} – ${daily.sunset[0].slice(11, 16)}</strong>`,
     ].map((item) => `<span>${item}</span>`).join('');
-    document.querySelector('#weatherTip').textContent = weatherTip(current.weather_code, current.temperature_2m);
     paintSky(now.sky, current.is_day === 1);
 
     const outfit = outfitFor(current.weather_code, current.temperature_2m, current.wind_speed_10m);

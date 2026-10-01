@@ -121,7 +121,6 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .weather-desc { text-align: left; }
 .weather-desc strong { display: block; color: #593f4a; font-size: 17px; }
 .weather-desc span { display: block; margin-top: 3px; color: #a88a93; font-size: 12.5px; }
-.weather-tip { max-width: 380px; margin: 18px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 22px; line-height: 1.15; }
 .weather .page-actions { margin-top: 22px; }
 .weather > *:not(.weather-sky) { position: relative; z-index: 1; }
 .weather-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin: 16px auto 0; color: #765c66; font-size: 12.5px; }
