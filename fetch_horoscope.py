@@ -6,15 +6,17 @@ import ssl
 import sys
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
-URL = "https://gogo.mn/horoscope/western/today"
-SIGN_CLASS = "zodiac-body-melhii"
+URL = "https://gogo.mn/api/v1/horoscope/data/%D3%A8%D0%B4%D3%A9%D1%80?year={year}"  # "Өдөр" (өдрийн зурхай)
+SIGN_NAME = "Мэлхий"
 OUT = "horoscope.json"
+KEEP_DAYS = 14
+UB_OFFSET = timedelta(hours=8)
 
 
 def fetch(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Accept": "application/json"})
     try:
         return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "replace")
     except urllib.error.URLError as err:
@@ -25,30 +27,21 @@ def fetch(url):
         return urllib.request.urlopen(req, timeout=30, context=ctx).read().decode("utf-8", "replace")
 
 
-def parse(page):
+def parse(payload):
+    """API-ийн хариунаас Мэлхийн ордны өдрийн зурхайг (огноо, текст) гаргана."""
+    items = json.loads(payload).get("data", {}).get("horoscope", [])
     days = []
-    for m in re.finditer(r'<div class="' + SIGN_CLASS + r'[^"]*"(.*?)</p>\s*</div>', page, flags=re.S):
-        block = m.group(0)
-        head = re.search(r"<h4[^>]*>(.*?)</h4>", block, re.S)
-        para = re.search(r"<p>(.*?)</p>", block, re.S)
-        if not head or not para:
+    for item in items:
+        if item.get("zodiac", {}).get("zodiacName") != SIGN_NAME:
             continue
-        head_text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", head.group(1))).strip()
-        date_m = re.search(r"(\d{4})/(\d{2})/(\d{2})", head_text)
-        if not date_m:
+        text = html.unescape(re.sub(r"\s+", " ", item.get("westHoroscopeDescDesc") or "")).strip()
+        start = item.get("westHoroscopeDescStartDate")
+        if not text or not start:
             continue
-        text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", para.group(1)))).strip()
-        if not text:
-            continue
-        date = "-".join(date_m.groups())
-        days.append({
-            "date": date,
-            "label": head_text.split(" ")[0],
-            "text": text,
-            "advice": star_advice(text, date),
-            "ratings": star_ratings(text, date),
-            "lucky": lucky(date),
-        })
+        # Огноо нь Улаанбаатарын шөнө дундыг UTC-ээр хадгалсан байдаг (жишээ нь 09-29T16:00Z = 09-30)
+        utc = datetime.strptime(start[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
+        date = (utc + UB_OFFSET).strftime("%Y-%m-%d")
+        days.append({"date": date, "label": "Өдөр", "text": text})
     return days
 
 
@@ -129,10 +122,25 @@ def star_advice(text, date):
 
 
 def main():
-    days = parse(fetch(URL))
-    if not days:
+    fresh = parse(fetch(URL.format(year=datetime.now(timezone.utc).year)))
+    if not fresh:
         print("Зурхай олдсонгүй, файлыг өөрчлөхгүй", file=sys.stderr)
         sys.exit(1)
+    # Өмнө хадгалсан өдрүүдийг хадгалж, шинээр ирснийг нь нэмнэ/солино
+    existing = []
+    try:
+        with open(OUT, encoding="utf-8") as f:
+            existing = [{"date": d["date"], "label": d.get("label", ""), "text": d["text"]} for d in json.load(f).get("days", [])]
+    except (OSError, ValueError, KeyError):
+        pass
+    by_date = {d["date"]: d for d in existing}
+    for d in fresh:
+        by_date[d["date"]] = d
+    days = [by_date[k] for k in sorted(by_date)][-KEEP_DAYS:]
+    for d in days:
+        d["advice"] = star_advice(d["text"], d["date"])
+        d["ratings"] = star_ratings(d["text"], d["date"])
+        d["lucky"] = lucky(d["date"])
     try:
         with open(OUT, encoding="utf-8") as f:
             if json.load(f).get("days") == days:
