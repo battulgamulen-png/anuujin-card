@@ -8,6 +8,9 @@ const farewellBackButton = document.querySelector('#farewellBackButton');
 const farewellContinueButton = document.querySelector('#farewellContinueButton');
 const weather = document.querySelector('#weather');
 const weatherBackButton = document.querySelector('#weatherBackButton');
+const weatherContinueButton = document.querySelector('#weatherContinueButton');
+const reply = document.querySelector('#reply');
+const replyBackButton = document.querySelector('#replyBackButton');
 const secretStar = document.querySelector('#secretStar');
 const secretNote = document.querySelector('#secretNote');
 const musicPlayer = document.querySelector('#musicPlayer');
@@ -361,6 +364,69 @@ farewellContinueButton.addEventListener('click', () => {
   setTimeout(showWeatherPage, 340);
 });
 weatherBackButton.addEventListener('click', () => goToPage(weather, farewell, true));
+weatherContinueButton.addEventListener('click', () => goToPage(weather, reply));
+replyBackButton.addEventListener('click', () => goToPage(reply, weather, true));
+
+// Хариу бичих: FormSubmit-ээр имэйл рүү илгээнэ
+const REPLY_ENDPOINT = 'https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com';
+const replyForm = document.querySelector('#replyForm');
+const replyText = document.querySelector('#replyText');
+const replyStatus = document.querySelector('#replyStatus');
+const replyDone = document.querySelector('#replyDone');
+const sendButton = document.querySelector('#sendButton');
+let selectedMood = '';
+document.querySelectorAll('.mood').forEach((button) => {
+  button.addEventListener('click', () => {
+    const wasSelected = button.classList.contains('selected');
+    document.querySelectorAll('.mood').forEach((b) => b.classList.remove('selected'));
+    if (!wasSelected) button.classList.add('selected');
+    selectedMood = wasSelected ? '' : button.dataset.mood;
+  });
+});
+replyForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const message = replyText.value.trim();
+  if (!message && !selectedMood) {
+    replyStatus.textContent = 'Юм бичээрэй, эсвэл дээрээс нэгийг нь сонгоорой';
+    replyText.focus();
+    return;
+  }
+  sendButton.disabled = true;
+  replyStatus.textContent = 'Илгээж байна…';
+  try {
+    const response = await fetch(REPLY_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        _subject: 'Ануужингаас захиа ✦',
+        _template: 'table',
+        _captcha: 'false',
+        'Сэтгэл': selectedMood || '—',
+        'Захиа': message || '—',
+        'Огноо': new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
+      }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.success === 'false' || result.success === false) throw new Error(result.message || response.status);
+    replyForm.classList.add('hidden');
+    replyDone.classList.remove('hidden');
+  } catch (error) {
+    replyStatus.textContent = String(error.message).includes('Activation')
+      ? 'Форм хараахан идэвхжээгүй байна, Тэмүүлэн имэйлээ шалгаарай'
+      : 'Илгээж чадсангүй, интернэтээ шалгаад дахин дараарай';
+  } finally {
+    sendButton.disabled = false;
+  }
+});
+document.querySelector('#replyAgainButton').addEventListener('click', () => {
+  replyText.value = '';
+  selectedMood = '';
+  document.querySelectorAll('.mood').forEach((b) => b.classList.remove('selected'));
+  replyStatus.textContent = '';
+  replyDone.classList.add('hidden');
+  replyForm.classList.remove('hidden');
+  replyText.focus();
+});
 
 secretStar.addEventListener('click', () => {
   secretNote.classList.toggle('hidden');

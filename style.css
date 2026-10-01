@@ -2,6 +2,7 @@
 /* Хуудас бүрийн өнгө */
 body[data-theme="zodiac"] { --rose: #9b7bd8; --gold: #d9b45a; --tint: #f3eefc; --bg: #ebe4f7; --glow1: #fff3c4; --glow2: #cdbdf0; --card: #fdfcff; }
 body[data-theme="farewell"] { --rose: #ee8a52; --gold: #e0a24a; --tint: #fff0e6; --bg: #fbe6d6; --glow1: #fff3bf; --glow2: #f7c3a6; --card: #fffcf8; }
+body[data-theme="reply"] { --rose: #4fae8a; --gold: #e0b35a; --tint: #e9f6ef; --bg: #e1f1e8; --glow1: #fff6c8; --glow2: #bfe6d1; --card: #fbfefc; }
 body[data-theme="weather"] { --rose: #4f9bd9; --gold: var(--gold); --tint: #eaf3fb; --bg: #e2eefa; --glow1: #fff8c9; --glow2: #b9d8f3; --card: #fbfdff; }
 * { box-sizing: border-box; }
 body {
@@ -30,7 +31,7 @@ h1 { font-size: clamp(42px, 8vw, 62px); } h1 em, h2 em { color: var(--rose); fon
 .continue { display: inline-grid; width: 58px; height: 44px; margin-top: 30px; padding: 0; place-items: center; border-radius: 16px; font-size: 28px; line-height: 1; }
 .page-actions { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 28px; }
 .page-actions .continue { margin-top: 0; }
-.zodiac, .farewell, .weather { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
+.zodiac, .farewell, .weather, .reply { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
 /* Хуудас эргэх шилжилт */
 .card { transition: transform .32s ease-in, opacity .32s ease-in, background-color .9s ease; }
 .card.flip-out { transform: perspective(1200px) rotateY(-70deg); opacity: .4; }
@@ -156,6 +157,26 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 @keyframes rainFall { to { transform: translateY(560px); } }
 @keyframes snowFall { 0% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(14px, 280px) rotate(120deg); } 100% { transform: translate(-8px, 560px) rotate(240deg); } }
 @keyframes fogDrift { from { transform: translateX(-20px); } to { transform: translateX(30px); } }
+/* 5-р хуудас: хариу бичих */
+.reply-icon { color: var(--gold); font-size: 44px; line-height: 1; }
+.reply h2 { margin-top: 6px; font-size: clamp(40px, 6.6vw, 52px); }
+.reply-note { margin: 10px 0 18px; color: #765c66; font-size: 13px; }
+.reply-form { max-width: 420px; margin: 0 auto; }
+.mood-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 12px; }
+.mood { padding: 7px 13px; border: 1px solid #f4dce3; border-radius: 999px; background: #fff; color: #9d7580; font-size: 12px; font-weight: 600; transition: background .2s, color .2s, transform .2s; }
+.mood.selected { background: var(--rose); color: #fff; border-color: transparent; }
+.reply-form textarea { display: block; width: 100%; padding: 14px 16px; border: 1px solid #f4dce3; border-radius: 16px; background: #fff; color: var(--ink); font-family: Manrope, sans-serif; font-size: 14px; line-height: 1.6; resize: vertical; outline: none; transition: border-color .2s, box-shadow .2s; }
+.reply-form textarea:focus { border-color: var(--rose); box-shadow: 0 0 0 3px #4fae8a22; }
+.reply-form textarea::placeholder { color: #c3a9b1; }
+.send { margin-top: 12px; font-size: 14px; }
+.send[disabled] { opacity: .6; cursor: wait; transform: none; }
+.reply-status { min-height: 18px; margin: 10px 0 0; color: #b07f8e; font-size: 12.5px; }
+.reply-done { animation: noteIn .5s ease both; }
+.reply-done .plane { color: var(--rose); font-size: 46px; line-height: 1; animation: fly 1.6s ease-out both; }
+.reply-done h3 { margin: 8px 0 6px; font-family: Caveat, cursive; font-size: 40px; color: var(--rose); }
+.back.again { width: auto; padding: 0 18px; font-size: 13px; }
+.reply-done p { margin: 0 0 14px; color: #765c66; font-size: 13px; }
+@keyframes fly { 0% { transform: translate(-40px, 30px) rotate(-10deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: none; opacity: 1; } }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: var(--rose); }
 @keyframes charIn { from { opacity:0; transform:translateY(8px) rotate(-4deg); } to { opacity:1; transform:none; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }

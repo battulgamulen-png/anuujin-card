@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=8" />
+    <link rel="stylesheet" href="style.css?v=9" />
   </head>
   <body data-theme="welcome">
     <main class="card" id="card">
@@ -30,8 +30,8 @@
         <h1 class="typewriter" id="welcomeTitle">Ануужин хүүхдэд<br />өглөө, өдөр, оройн<br /><em>мэээээнд!</em></h1>
         <button class="yes continue" id="continueButton" aria-label="Үргэлжлүүлэх">→</button>
         <div class="secret-note hidden" id="secretNote" aria-live="polite">P.S. Өнөөдөр заавал инээмсэглээрэй ✦</div>
-        <div class="page-dots" aria-label="1-р хуудас, нийт 4">
-          <span class="active"></span><span></span><span></span><span></span>
+        <div class="page-dots" aria-label="1-р хуудас, нийт 5">
+          <span class="active"></span><span></span><span></span><span></span><span></span>
         </div>
       </section>
 
@@ -69,8 +69,8 @@
           <button class="back" id="zodiacBackButton" aria-label="Буцах">←</button>
           <button class="yes continue" id="zodiacContinueButton" aria-label="Цааш үргэлжлүүлэх">→</button>
         </div>
-        <div class="page-dots" aria-label="2-р хуудас, нийт 4">
-          <span></span><span class="active"></span><span></span><span></span>
+        <div class="page-dots" aria-label="2-р хуудас, нийт 5">
+          <span></span><span class="active"></span><span></span><span></span><span></span>
         </div>
       </section>
 
@@ -100,8 +100,8 @@
           <button class="back" id="farewellBackButton" aria-label="Буцах">←</button>
           <button class="yes continue" id="farewellContinueButton" aria-label="Цаг агаар үзэх">→</button>
         </div>
-        <div class="page-dots" aria-label="3-р хуудас, нийт 4">
-          <span></span><span></span><span class="active"></span><span></span>
+        <div class="page-dots" aria-label="3-р хуудас, нийт 5">
+          <span></span><span></span><span class="active"></span><span></span><span></span>
         </div>
       </section>
 
@@ -125,12 +125,41 @@
         <p class="weather-tip" id="weatherTip"></p>
         <div class="page-actions">
           <button class="back" id="weatherBackButton" aria-label="Буцах">←</button>
+          <button class="yes continue" id="weatherContinueButton" aria-label="Хариу бичих">→</button>
         </div>
-        <div class="page-dots" aria-label="4-р хуудас, нийт 4">
-          <span></span><span></span><span></span><span class="active"></span>
+        <div class="page-dots" aria-label="4-р хуудас, нийт 5">
+          <span></span><span></span><span></span><span class="active"></span><span></span>
+        </div>
+      </section>
+      <section class="reply hidden" id="reply">
+        <div class="reply-icon" aria-hidden="true">✉</div>
+        <h2><em>Өнөөдөр</em><br />ямар байна?</h2>
+        <p class="reply-note">Юу ч бичсэн Тэмүүлэнд шууд очно ✦</p>
+        <form class="reply-form" id="replyForm" novalidate>
+          <div class="mood-row" role="group" aria-label="Өнөөдрийн сэтгэл">
+            <button type="button" class="mood" data-mood="Сайхан байна">сайхан</button>
+            <button type="button" class="mood" data-mood="Зүгээр л байна">зүгээр</button>
+            <button type="button" class="mood" data-mood="Ядарсан байна">ядарсан</button>
+            <button type="button" class="mood" data-mood="Гэрээ санаж байна">санаж байна</button>
+          </div>
+          <textarea id="replyText" name="message" rows="5" maxlength="1500" placeholder="Энд бичээрэй…" aria-label="Захиа"></textarea>
+          <button type="submit" class="yes send" id="sendButton">Илгээх ✦</button>
+          <p class="reply-status" id="replyStatus" aria-live="polite"></p>
+        </form>
+        <div class="reply-done hidden" id="replyDone">
+          <div class="plane" aria-hidden="true">✈</div>
+          <h3>Илгээгдлээ ✦</h3>
+          <p>Тэмүүлэн удахгүй уншина. Дахиад бичмээр бол доороос.</p>
+          <button type="button" class="back again" id="replyAgainButton">Дахин бичих</button>
+        </div>
+        <div class="page-actions">
+          <button class="back" id="replyBackButton" aria-label="Буцах">←</button>
+        </div>
+        <div class="page-dots" aria-label="5-р хуудас, нийт 5">
+          <span></span><span></span><span></span><span></span><span class="active"></span>
         </div>
       </section>
     </main>
-    <script src="script.js?v=11"></script>
+    <script src="script.js?v=12"></script>
   </body>
 </html>
