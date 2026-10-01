@@ -17,9 +17,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=9" />
+    <link rel="stylesheet" href="style.css?v=10" />
   </head>
   <body data-theme="welcome">
+    <div class="night-sky" id="nightSky" aria-hidden="true"><div class="moon"></div></div>
     <main class="card" id="card">
       <section class="welcome" id="welcome">
         <div class="star-field" aria-hidden="true">
@@ -78,12 +79,16 @@
         <div class="music-icon" aria-hidden="true">♫</div>
         <h2>Өглөө зурхайгаа харвал<br /><em>гоё дуу сонсож эхлүүлэг гээд</em><br />энэ хэсгийг оруулаа&nbsp;<span class="star-mark">✦</span></h2>
         <button class="music-player" id="musicPlayer" type="button" aria-label="A-Sound хамтлагийн Хэлээгүй ч дууг тоглуулах">
-          <div class="record" aria-hidden="true"><span></span></div>
+          <div class="record" aria-hidden="true">
+            <img class="album-art" id="albumArt" src="" alt="" />
+            <span class="hole"></span>
+            <span class="play-icon" id="playIcon">▶</span>
+          </div>
           <div class="tonearm" aria-hidden="true"><span></span></div>
           <div class="track-info">
             <span class="now-playing">now playing</span>
             <strong id="songTitle">A-Sound — Хэлээгүй ч…</strong>
-            <div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="equalizer" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
             <div class="progress"><span id="progressBar"></span></div>
             <span class="song-placeholder" id="songStatus">дарж тоглуулаарай</span>
           </div>
@@ -152,6 +157,6 @@
         </div>
       </section>
     </main>
-    <script src="script.js?v=14"></script>
+    <script src="script.js?v=15"></script>
   </body>
 </html>

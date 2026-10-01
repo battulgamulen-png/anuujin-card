@@ -270,6 +270,36 @@ const loadWeather = async () => {
 };
 loadWeather();
 
+// Шөнийн горим: 18:00–06:00 (хөтчийн цагаар) автоматаар
+const nightSky = document.querySelector('#nightSky');
+for (let i = 0; i < 26; i++) {
+  const star = document.createElement('span');
+  star.className = 'nstar';
+  star.textContent = Math.random() > 0.6 ? '✦' : '·';
+  star.style.setProperty('--x', `${1 + Math.random() * 98}%`);
+  star.style.setProperty('--y', `${1 + Math.random() * 94}%`);
+  star.style.setProperty('--s', `${8 + Math.random() * 10}px`);
+  star.style.setProperty('--delay', `${Math.random() * 3}s`);
+  nightSky.appendChild(star);
+}
+let nightState = null;
+let nightSwitchTimer = null;
+const applyNightMode = () => {
+  const hour = new Date().getHours();
+  const isNight = hour >= 18 || hour < 6;
+  if (isNight === nightState) return;
+  if (nightState !== null) {
+    // Өдөр ↔ шөнө шилжилтийг 2.5 секундэд зөөлөн хийнэ
+    document.body.classList.add('night-switching');
+    clearTimeout(nightSwitchTimer);
+    nightSwitchTimer = setTimeout(() => document.body.classList.remove('night-switching'), 3000);
+  }
+  nightState = isNight;
+  document.body.classList.toggle('night', isNight);
+};
+applyNightMode();
+setInterval(applyNightMode, 60000);
+
 // Гарчгийг үсэг үсгээр гаргах (typewriter)
 const typewrite = (element) => {
   let index = 0;
@@ -451,6 +481,7 @@ const setPlaying = (playing) => {
   musicPlayer.classList.toggle('is-playing', playing);
   if (playing) startNotes(); else stopNotes();
   card.classList.toggle('music-on', playing);
+  playIcon.textContent = playing ? '❚❚' : '▶';
   songStatus.textContent = playing ? 'одоо тоглож байна' : 'дарж тоглуулаарай';
 };
 
@@ -485,6 +516,16 @@ const playSong = () => {
   player.playVideo();
 };
 
+// Пянзны голын album зураг (YouTube-ийн thumbnail)
+const albumArt = document.querySelector('#albumArt');
+const playIcon = document.querySelector('#playIcon');
+const setAlbumArt = (videoId) => {
+  albumArt.classList.remove('loaded');
+  albumArt.onload = () => albumArt.classList.add('loaded');
+  albumArt.src = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+};
+setAlbumArt(PLAYLIST[0].id);
+
 // Дуу солих
 const songTitle = document.querySelector('#songTitle');
 const playlistIndex = document.querySelector('#playlistIndex');
@@ -493,6 +534,7 @@ const changeSong = (step) => {
   const song = PLAYLIST[songIndex];
   songTitle.textContent = song.title;
   playlistIndex.textContent = `${songIndex + 1} / ${PLAYLIST.length}`;
+  setAlbumArt(song.id);
   progressBar.style.width = '0';
   hasStarted = true;
   if (!playerReady) {
