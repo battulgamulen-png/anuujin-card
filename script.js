@@ -374,20 +374,11 @@ const replyText = document.querySelector('#replyText');
 const replyStatus = document.querySelector('#replyStatus');
 const replyDone = document.querySelector('#replyDone');
 const sendButton = document.querySelector('#sendButton');
-let selectedMood = '';
-document.querySelectorAll('.mood').forEach((button) => {
-  button.addEventListener('click', () => {
-    const wasSelected = button.classList.contains('selected');
-    document.querySelectorAll('.mood').forEach((b) => b.classList.remove('selected'));
-    if (!wasSelected) button.classList.add('selected');
-    selectedMood = wasSelected ? '' : button.dataset.mood;
-  });
-});
 replyForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const message = replyText.value.trim();
-  if (!message && !selectedMood) {
-    replyStatus.textContent = 'Юм бичээрэй, эсвэл дээрээс нэгийг нь сонгоорой';
+  if (!message) {
+    replyStatus.textContent = 'Юм бичээрэй';
     replyText.focus();
     return;
   }
@@ -401,8 +392,7 @@ replyForm.addEventListener('submit', async (event) => {
         _subject: 'Ануужингаас захиа ✦',
         _template: 'table',
         _captcha: 'false',
-        'Сэтгэл': selectedMood || '—',
-        'Захиа': message || '—',
+        'Захиа': message,
         'Огноо': new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
       }),
     });
@@ -420,8 +410,6 @@ replyForm.addEventListener('submit', async (event) => {
 });
 document.querySelector('#replyAgainButton').addEventListener('click', () => {
   replyText.value = '';
-  selectedMood = '';
-  document.querySelectorAll('.mood').forEach((b) => b.classList.remove('selected'));
   replyStatus.textContent = '';
   replyDone.classList.add('hidden');
   replyForm.classList.remove('hidden');
