@@ -26,7 +26,7 @@ const finalNote = document.querySelector('#finalNote');
 // Плейлист: YouTube ID, нэр, эхлэх секунд
 const PLAYLIST = [
   { id: 'Uv4zZpWDr9c', title: 'A-Sound — Хэлээгүй ч…', start: 0 },
-  { id: '0BOxxsscCAA', title: 'A-Sound — Нүүгдэх салхи', start: 0 },
+  { id: '0BOxxsscCAA', title: 'A-Sound — Нуугдах салхи', start: 0 },
   { id: 'NXolApL1GIo', title: 'Becca — Comfy', start: 0 },
   { id: 'lbCA9D1X7to', title: 'Magnolian & NMN — Өөр хүмүүс', start: 0 },
 ];
