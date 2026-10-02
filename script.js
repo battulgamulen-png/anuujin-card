@@ -1,3 +1,4 @@
+const lock = document.querySelector('#lock');
 const welcome = document.querySelector('#welcome');
 const continueButton = document.querySelector('#continueButton');
 const zodiac = document.querySelector('#zodiac');
@@ -330,7 +331,53 @@ const typewrite = (element) => {
   };
   [...element.childNodes].forEach(wrap);
 };
-typewrite(welcomeTitle);
+let titleTyped = false;
+
+// Нууц код: SHA-256 hash-тай харьцуулна, код өөрөө кодонд байхгүй
+const CODE_HASH = '59012b44adb8c2f5e94b7a197e260fa945cc23ddd4d8737195d9391396d0ec5c';
+const lockForm = document.querySelector('#lockForm');
+const codeInput = document.querySelector('#codeInput');
+const lockStatus = document.querySelector('#lockStatus');
+const sha256 = async (text) => {
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+};
+codeInput.addEventListener('input', () => {
+  codeInput.value = codeInput.value.replace(/\D/g, '').slice(0, 4);
+  lockStatus.textContent = '';
+  if (codeInput.value.length === 4) lockForm.requestSubmit();
+});
+lockForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const code = codeInput.value.trim();
+  if (code.length < 4) {
+    lockStatus.textContent = '4 оронтой тоо оруулаарай';
+    return;
+  }
+  let ok = false;
+  try {
+    ok = (await sha256(code)) === CODE_HASH;
+  } catch {
+    lockStatus.textContent = 'Хөтөч дэмжихгүй байна, өөр хөтчөөр нээгээрэй';
+    return;
+  }
+  if (!ok) {
+    lockForm.classList.remove('shake');
+    void lockForm.offsetWidth;
+    lockForm.classList.add('shake');
+    lockStatus.textContent = 'Буруу код байна, дахин бодоод үзээрэй ✦';
+    codeInput.select();
+    return;
+  }
+  lockStatus.textContent = '';
+  codeInput.blur();
+  if (!titleTyped) {
+    titleTyped = true;
+    typewrite(welcomeTitle);
+  }
+  goToPage(lock, welcome);
+});
 
 // Од, зүрх бууж унах
 const random = (min, max) => min + Math.random() * (max - min);
