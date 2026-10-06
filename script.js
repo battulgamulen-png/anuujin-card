@@ -462,7 +462,6 @@ lockForm.addEventListener('submit', async (event) => {
   }
   lockStatus.textContent = '';
   codeInput.blur();
-  await playIntro();
   if (!titleTyped) {
     titleTyped = true;
     typewrite(welcomeTitle);
@@ -612,17 +611,13 @@ secretStar.addEventListener('click', () => {
 // Хуудас солих: хуруугаар эсвэл хулганаар гүйлгэх, ← → товчлуур
 const PAGES = [welcome, zodiac, farewell, weather, reply];
 const currentPage = () => PAGES.find((page) => !page.classList.contains('hidden'));
-const swipeHint = document.querySelector('#swipeHint');
 const movePage = (direction) => {
   if (isFlipping || !lock.classList.contains('hidden')) return;
   const from = currentPage();
   const index = PAGES.indexOf(from);
   const to = PAGES[index + direction];
   if (!to) return;
-  if (from === welcome) {
-    dropConfetti();
-    swipeHint.classList.add('hidden');
-  }
+  if (from === welcome) dropConfetti();
   goToPage(from, to, direction < 0);
   if (to === weather) setTimeout(showWeatherPage, 340);
 };
@@ -703,31 +698,6 @@ const requestTilt = () => {
 };
 if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') enableTilt();
 
-// Кодын дараах intro: одод цугларч нэр бичигдэнэ
-const intro = document.querySelector('#intro');
-const playIntro = () => new Promise((resolve) => {
-  intro.textContent = '';
-  const name = document.createElement('div');
-  name.className = 'intro-name';
-  name.textContent = 'Ануужин';
-  intro.appendChild(name);
-  for (let i = 0; i < 40; i++) {
-    const star = document.createElement('span');
-    star.className = 'istar';
-    star.textContent = ['✦', '✧', '·'][i % 3];
-    star.style.setProperty('--dx', `${(Math.random() - 0.5) * Math.max(window.innerWidth, 700)}px`);
-    star.style.setProperty('--dy', `${(Math.random() - 0.5) * Math.max(window.innerHeight, 900)}px`);
-    star.style.setProperty('--s', `${10 + Math.random() * 16}px`);
-    star.style.setProperty('--delay', `${Math.random() * 0.6}s`);
-    intro.appendChild(star);
-  }
-  intro.classList.remove('hidden', 'leaving');
-  setTimeout(() => {
-    intro.classList.add('leaving');
-    resolve();
-  }, 2300);
-  setTimeout(() => intro.classList.add('hidden'), 3000);
-});
 
 // Зураг дээр дарахад 2 дахь зураг руу солигдоно
 photoFrame.addEventListener('click', () => {
