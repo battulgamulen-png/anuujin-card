@@ -259,6 +259,12 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .back.again { width: auto; padding: 0 18px; font-size: 13px; }
 .reply-done p { margin: 0 0 14px; color: #765c66; font-size: 13px; }
 @keyframes fly { 0% { transform: translate(-40px, 30px) rotate(-10deg); opacity: 0; } 60% { opacity: 1; } 100% { transform: none; opacity: 1; } }
+.swipe-hint { margin: 26px 0 0; color: #c3a9b1; font-size: 12px; font-weight: 600; letter-spacing: .5px; animation: hintPulse 2.4s ease-in-out infinite; }
+.swipe-hint.hidden { display: none; }
+@keyframes hintPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+.card.dragging { user-select: none; }
+.page-dots { margin-top: 24px; }
+.farewell .page-dots, .weather .page-dots, .reply .page-dots, .zodiac .page-dots { margin-top: 26px; }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: var(--rose); }
 @keyframes charIn { from { opacity:0; transform:translateY(8px) rotate(-4deg); } to { opacity:1; transform:none; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }

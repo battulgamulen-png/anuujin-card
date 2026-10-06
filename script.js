@@ -1,17 +1,9 @@
 const lock = document.querySelector('#lock');
 const welcome = document.querySelector('#welcome');
-const continueButton = document.querySelector('#continueButton');
 const zodiac = document.querySelector('#zodiac');
-const zodiacContinueButton = document.querySelector('#zodiacContinueButton');
-const zodiacBackButton = document.querySelector('#zodiacBackButton');
 const farewell = document.querySelector('#farewell');
-const farewellBackButton = document.querySelector('#farewellBackButton');
-const farewellContinueButton = document.querySelector('#farewellContinueButton');
 const weather = document.querySelector('#weather');
-const weatherBackButton = document.querySelector('#weatherBackButton');
-const weatherContinueButton = document.querySelector('#weatherContinueButton');
 const reply = document.querySelector('#reply');
-const replyBackButton = document.querySelector('#replyBackButton');
 const secretStar = document.querySelector('#secretStar');
 const secretNote = document.querySelector('#secretNote');
 const musicPlayer = document.querySelector('#musicPlayer');
@@ -563,20 +555,6 @@ const goToPage = (from, to, backward = false) => {
   }, 320);
 };
 
-continueButton.addEventListener('click', () => {
-  dropConfetti();
-  goToPage(welcome, zodiac);
-});
-zodiacContinueButton.addEventListener('click', () => goToPage(zodiac, farewell));
-zodiacBackButton.addEventListener('click', () => goToPage(zodiac, welcome, true));
-farewellBackButton.addEventListener('click', () => goToPage(farewell, zodiac, true));
-farewellContinueButton.addEventListener('click', () => {
-  goToPage(farewell, weather);
-  setTimeout(showWeatherPage, 340);
-});
-weatherBackButton.addEventListener('click', () => goToPage(weather, farewell, true));
-weatherContinueButton.addEventListener('click', () => goToPage(weather, reply));
-replyBackButton.addEventListener('click', () => goToPage(reply, weather, true));
 
 // Хариу бичих: FormSubmit-ээр имэйл рүү илгээнэ
 const REPLY_ENDPOINT = 'https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com';
@@ -631,44 +609,71 @@ secretStar.addEventListener('click', () => {
   secretNote.classList.toggle('hidden');
 });
 
-// Swipe: утсан дээр хуруугаар гүйлгэж хуудас солино
+// Хуудас солих: хуруугаар эсвэл хулганаар гүйлгэх, ← → товчлуур
 const PAGES = [welcome, zodiac, farewell, weather, reply];
 const currentPage = () => PAGES.find((page) => !page.classList.contains('hidden'));
+const swipeHint = document.querySelector('#swipeHint');
+const movePage = (direction) => {
+  if (isFlipping || !lock.classList.contains('hidden')) return;
+  const from = currentPage();
+  const index = PAGES.indexOf(from);
+  const to = PAGES[index + direction];
+  if (!to) return;
+  if (from === welcome) {
+    dropConfetti();
+    swipeHint.classList.add('hidden');
+  }
+  goToPage(from, to, direction < 0);
+  if (to === weather) setTimeout(showWeatherPage, 340);
+};
 let swipe = null;
-card.addEventListener('touchstart', (event) => {
+const startSwipe = (x, y, target) => {
   swipe = null;
   if (!lock.classList.contains('hidden') || isFlipping) return;
-  if (event.target.closest('textarea, input, .weather-hours, .playlist-nav')) return;
-  swipe = { x: event.touches[0].clientX, y: event.touches[0].clientY, dx: 0, moved: false };
-}, { passive: true });
-card.addEventListener('touchmove', (event) => {
+  if (target.closest('textarea, input, .weather-hours, .playlist-nav')) return;
+  swipe = { x, y, dx: 0, moved: false };
+};
+const moveSwipe = (x, y) => {
   if (!swipe) return;
-  const dx = event.touches[0].clientX - swipe.x;
-  const dy = event.touches[0].clientY - swipe.y;
+  const dx = x - swipe.x;
+  const dy = y - swipe.y;
   if (!swipe.moved && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) swipe.moved = true;
   if (!swipe.moved) return;
   swipe.dx = dx;
   card.classList.add('dragging');
   card.style.transform = `translateX(${dx * 0.35}px) rotate(${dx * 0.008}deg)`;
-}, { passive: true });
+};
 const endSwipe = () => {
   if (!swipe) return;
   const { dx, moved } = swipe;
   swipe = null;
   card.classList.remove('dragging');
   card.style.transform = '';
-  if (!moved || Math.abs(dx) < 60) return;
-  const from = currentPage();
-  const index = PAGES.indexOf(from);
-  if (dx < 0 && index < PAGES.length - 1) {
-    goToPage(from, PAGES[index + 1]);
-    if (PAGES[index + 1] === weather) setTimeout(showWeatherPage, 340);
-  } else if (dx > 0 && index > 0) {
-    goToPage(from, PAGES[index - 1], true);
-  }
+  if (!moved) return;
+  lastDragEnd = Date.now();
+  if (Math.abs(dx) < 60) return;
+  movePage(dx < 0 ? 1 : -1);
 };
+// Чирсний дараа шууд ирэх click-ийг хаана (товч санамсаргүй дарагдахгүй)
+let lastDragEnd = 0;
+document.addEventListener('click', (event) => {
+  if (Date.now() - lastDragEnd < 500) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+}, true);
+card.addEventListener('touchstart', (event) => startSwipe(event.touches[0].clientX, event.touches[0].clientY, event.target), { passive: true });
+card.addEventListener('touchmove', (event) => moveSwipe(event.touches[0].clientX, event.touches[0].clientY), { passive: true });
 card.addEventListener('touchend', endSwipe);
 card.addEventListener('touchcancel', endSwipe);
+card.addEventListener('mousedown', (event) => { if (event.button === 0) startSwipe(event.clientX, event.clientY, event.target); });
+window.addEventListener('mousemove', (event) => moveSwipe(event.clientX, event.clientY));
+window.addEventListener('mouseup', endSwipe);
+window.addEventListener('keydown', (event) => {
+  if (event.target.closest('textarea, input')) return;
+  if (event.key === 'ArrowRight') movePage(1);
+  if (event.key === 'ArrowLeft') movePage(-1);
+});
 
 // Parallax: хулгана эсвэл утасны хазайлтаар од, сар зөөлөн хөдөлнө
 const clampUnit = (value) => Math.max(-1, Math.min(1, value));
