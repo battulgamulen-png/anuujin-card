@@ -58,6 +58,7 @@ const revealLines = (element, text) => {
     element.appendChild(span);
   });
 };
+let storyData = null;
 const loadHoroscope = async () => {
   try {
     const response = await fetch(`horoscope.json?t=${Date.now()}`, { cache: 'no-store' });
@@ -69,6 +70,7 @@ const loadHoroscope = async () => {
     const [year, month, day] = entry.date.split('-').map(Number);
     const weekday = WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
     horoscopeTitle.textContent = `Өнөөдрийн хувьд · ${year}.${String(month).padStart(2, '0')}.${String(day).padStart(2, '0')}, ${weekday} гараг`;
+    storyData = { title: horoscopeTitle.textContent, text: entry.text, ratings: entry.ratings, lucky: entry.lucky };
     revealLines(horoscopeText, entry.text);
     if (entry.advice) revealLines(document.querySelector('#starText'), entry.advice);
     if (entry.ratings) {
@@ -305,6 +307,97 @@ const applyNightMode = () => {
 applyNightMode();
 setInterval(applyNightMode, 60000);
 
+// Instagram story зураг: өнөөдрийн зурхайг 1080x1920 зураг болгоно
+const shareButton = document.querySelector('#shareButton');
+const wrapText = (ctx, text, maxWidth) => {
+  const lines = [];
+  let line = '';
+  text.split(' ').forEach((word) => {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = word; } else line = test;
+  });
+  if (line) lines.push(line);
+  return lines;
+};
+const buildStoryImage = async () => {
+  try { await Promise.all([document.fonts.load('700 96px Caveat'), document.fonts.load('600 34px Manrope'), document.fonts.load('700 28px Manrope')]); } catch { /* фонт ачаалагдаагүй ч зурна */ }
+  const data = storyData || { title: horoscopeTitle.textContent, text: horoscopeText.textContent, ratings: null, lucky: null };
+  const W = 1080, H = 1920;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, '#1a1538'); sky.addColorStop(1, '#3a2a55');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 90; i++) {
+    ctx.fillStyle = `rgba(244, 217, 166, ${0.3 + Math.random() * 0.7})`;
+    ctx.beginPath(); ctx.arc(Math.random() * W, Math.random() * H, 1 + Math.random() * 2.5, 0, Math.PI * 2); ctx.fill();
+  }
+  // Агуулгыг эхлээд хэмжээд картын өндрийг тооцно
+  const cx = 80, cw = W - 160, r = 48;
+  ctx.font = '600 34px Manrope';
+  const bodyLines = wrapText(ctx, data.text, cw - 200);
+  let contentHeight = 490 + bodyLines.length * 52;
+  if (data.ratings) contentHeight += 150;
+  if (data.lucky) contentHeight += 70;
+  contentHeight += 150;
+  const ch = Math.min(H - 360, contentHeight);
+  const cy = Math.max(160, Math.round((H - ch) / 2) - 40);
+  ctx.fillStyle = 'rgba(255, 253, 251, 0.97)';
+  ctx.beginPath(); ctx.roundRect(cx, cy, cw, ch, r); ctx.fill();
+  ctx.strokeStyle = 'rgba(239, 173, 192, 0.5)'; ctx.setLineDash([6, 6]); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.roundRect(cx + 18, cy + 18, cw - 36, ch - 36, r - 14); ctx.stroke(); ctx.setLineDash([]);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#e9aa78'; ctx.font = '700 64px Caveat'; ctx.fillText('✦', W / 2, cy + 110);
+  ctx.fillStyle = '#9b7bd8'; ctx.font = '700 96px Caveat'; ctx.fillText('Ануужингийн', W / 2, cy + 230);
+  ctx.fillStyle = '#593f4a'; ctx.fillText('өнөөдрийн зурхай', W / 2, cy + 330);
+  ctx.fillStyle = '#bd788c'; ctx.font = '700 28px Manrope'; ctx.fillText(data.title.replace('Өнөөдрийн хувьд · ', '').toUpperCase() + '  ·  МЭЛХИЙ', W / 2, cy + 400);
+  ctx.fillStyle = '#593f4a'; ctx.font = '600 34px Manrope';
+  let y = cy + 490;
+  bodyLines.forEach((line) => { ctx.fillText(line, W / 2, y); y += 52; });
+  if (data.ratings) {
+    y += 40;
+    const rows = [['Ерөнхий', data.ratings.overall], ['Сэтгэл санаа', data.ratings.mood], ['Амжилт', data.ratings.success]];
+    rows.forEach(([label, value], i) => {
+      const x = cx + 150 + i * ((cw - 300) / 2);
+      ctx.fillStyle = '#bd788c'; ctx.font = '700 24px Manrope'; ctx.fillText(label.toUpperCase(), x, y);
+      ctx.fillStyle = '#e9aa78'; ctx.font = '700 40px Manrope'; ctx.fillText('★'.repeat(value) , x, y + 52);
+    });
+    y += 110;
+  }
+  if (data.lucky) {
+    y += 40;
+    const luckyText = `Азын тоо: ${data.lucky.number}   ·   Азын өнгө: ${data.lucky.color}`;
+    ctx.fillStyle = '#765c66'; ctx.font = '600 30px Manrope';
+    ctx.fillText(luckyText, W / 2 - 16, y);
+    ctx.fillStyle = data.lucky.hex; ctx.beginPath(); ctx.arc(W / 2 - 16 + ctx.measureText(luckyText).width / 2 + 28, y - 10, 12, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+  ctx.fillStyle = '#c793a1'; ctx.font = '700 36px Caveat'; ctx.fillText('— чамд зориулав ✦', W / 2, cy + ch - 70);
+  ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '600 24px Manrope'; ctx.fillText('battulgamulen-png.github.io/anuujin-card', W / 2, H - 90);
+  return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+};
+shareButton.addEventListener('click', async () => {
+  shareButton.disabled = true;
+  const original = shareButton.textContent;
+  shareButton.textContent = 'Зураг бэлдэж байна…';
+  try {
+    const blob = await buildStoryImage();
+    const file = new File([blob], 'anuujin-zurhai.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'Ануужингийн өнөөдрийн зурхай' });
+    } else {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'anuujin-zurhai.png';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 5000);
+    }
+  } catch { /* хэрэглэгч цуцалсан эсвэл дэмжихгүй */ }
+  shareButton.textContent = original;
+  shareButton.disabled = false;
+});
+
 // Гарчгийг үсэг үсгээр гаргах (typewriter)
 const typewrite = (element) => {
   let index = 0;
@@ -355,6 +448,7 @@ codeInput.addEventListener('input', () => {
 lockForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const code = codeInput.value.trim();
+  if (code.length === 4) requestTilt();
   if (code.length < 4) {
     lockStatus.textContent = '4 оронтой тоо оруулаарай';
     return;
@@ -376,6 +470,7 @@ lockForm.addEventListener('submit', async (event) => {
   }
   lockStatus.textContent = '';
   codeInput.blur();
+  await playIntro();
   if (!titleTyped) {
     titleTyped = true;
     typewrite(welcomeTitle);
@@ -402,6 +497,51 @@ const dropConfetti = () => {
     piece.addEventListener('animationend', () => piece.remove());
   }
 };
+
+// Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
+const SPECIAL_DAYS = [
+  { key: 'birthday', match: (m, d) => m === 6 && d === 30, badge: 'Төрсөн өдрийн мэнд ✦', title: 'Төрсөн өдрийн мэнд<br /><em>Ануужин минь!</em>', effect: 'confetti', cake: true },
+  { key: 'newyear', match: (m, d) => (m === 12 && d === 31) || (m === 1 && d === 1), badge: 'Шинэ жил ✦', title: 'Ануужинд<br /><em>Шинэ жилийн мэнд!</em>', effect: 'snow' },
+  { key: 'tsagaansar', match: (m, d, iso) => ['2027-02-07', '2027-02-08', '2027-02-09'].includes(iso), badge: 'Цагаан сар ✦', title: 'Ануужин<br /><em>амар байна уу?</em>', effect: 'confetti' },
+  { key: 'valentine', match: (m, d) => m === 2 && d === 14, badge: 'Valentine ✦', title: 'Ануужинд<br /><em>хайрын өдрийн мэнд!</em>', effect: 'confetti' },
+];
+const specialBadge = document.querySelector('#specialBadge');
+const startSnow = () => {
+  const layer = document.createElement('div');
+  layer.className = 'snowfall';
+  for (let i = 0; i < 40; i++) {
+    const flake = document.createElement('span');
+    flake.textContent = '❄';
+    flake.style.setProperty('--x', `${random(0, 100)}%`);
+    flake.style.setProperty('--s', `${random(8, 18)}px`);
+    flake.style.setProperty('--d', `${random(7, 13)}s`);
+    flake.style.setProperty('--delay', `${random(-12, 0)}s`);
+    layer.appendChild(flake);
+  }
+  document.body.appendChild(layer);
+};
+const applySpecialDay = () => {
+  const forced = new URLSearchParams(location.search).get('special');
+  const now = new Date();
+  const iso = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const day = SPECIAL_DAYS.find((sd) => (forced ? sd.key === forced : sd.match(now.getMonth() + 1, now.getDate(), iso)));
+  if (!day) return;
+  document.body.dataset.special = day.key;
+  specialBadge.textContent = day.badge;
+  specialBadge.classList.remove('hidden');
+  welcomeTitle.innerHTML = day.title;
+  if (day.cake) {
+    const cake = document.createElement('div');
+    cake.className = 'cake';
+    cake.innerHTML = '<div class="layer b"></div><div class="layer m"></div><div class="layer t"></div><div class="candle"></div><div class="flame"></div>';
+    welcomeTitle.before(cake);
+  }
+  if (day.effect === 'snow') startSnow();
+  if (day.effect === 'confetti') {
+    setInterval(() => { if (!welcome.classList.contains('hidden')) dropConfetti(); }, 4500);
+  }
+};
+applySpecialDay();
 
 // Хуудас эргэж солигдох
 let isFlipping = false;
@@ -489,6 +629,99 @@ document.querySelector('#replyAgainButton').addEventListener('click', () => {
 
 secretStar.addEventListener('click', () => {
   secretNote.classList.toggle('hidden');
+});
+
+// Swipe: утсан дээр хуруугаар гүйлгэж хуудас солино
+const PAGES = [welcome, zodiac, farewell, weather, reply];
+const currentPage = () => PAGES.find((page) => !page.classList.contains('hidden'));
+let swipe = null;
+card.addEventListener('touchstart', (event) => {
+  swipe = null;
+  if (!lock.classList.contains('hidden') || isFlipping) return;
+  if (event.target.closest('textarea, input, .weather-hours, .playlist-nav')) return;
+  swipe = { x: event.touches[0].clientX, y: event.touches[0].clientY, dx: 0, moved: false };
+}, { passive: true });
+card.addEventListener('touchmove', (event) => {
+  if (!swipe) return;
+  const dx = event.touches[0].clientX - swipe.x;
+  const dy = event.touches[0].clientY - swipe.y;
+  if (!swipe.moved && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) swipe.moved = true;
+  if (!swipe.moved) return;
+  swipe.dx = dx;
+  card.classList.add('dragging');
+  card.style.transform = `translateX(${dx * 0.35}px) rotate(${dx * 0.008}deg)`;
+}, { passive: true });
+const endSwipe = () => {
+  if (!swipe) return;
+  const { dx, moved } = swipe;
+  swipe = null;
+  card.classList.remove('dragging');
+  card.style.transform = '';
+  if (!moved || Math.abs(dx) < 60) return;
+  const from = currentPage();
+  const index = PAGES.indexOf(from);
+  if (dx < 0 && index < PAGES.length - 1) {
+    goToPage(from, PAGES[index + 1]);
+    if (PAGES[index + 1] === weather) setTimeout(showWeatherPage, 340);
+  } else if (dx > 0 && index > 0) {
+    goToPage(from, PAGES[index - 1], true);
+  }
+};
+card.addEventListener('touchend', endSwipe);
+card.addEventListener('touchcancel', endSwipe);
+
+// Parallax: хулгана эсвэл утасны хазайлтаар од, сар зөөлөн хөдөлнө
+const clampUnit = (value) => Math.max(-1, Math.min(1, value));
+const setParallax = (x, y) => {
+  document.documentElement.style.setProperty('--px', clampUnit(x).toFixed(3));
+  document.documentElement.style.setProperty('--py', clampUnit(y).toFixed(3));
+};
+window.addEventListener('mousemove', (event) => {
+  setParallax((event.clientX / window.innerWidth - 0.5) * 2, (event.clientY / window.innerHeight - 0.5) * 2);
+});
+let tiltEnabled = false;
+const enableTilt = () => {
+  if (tiltEnabled) return;
+  tiltEnabled = true;
+  window.addEventListener('deviceorientation', (event) => {
+    if (event.gamma === null || event.beta === null) return;
+    setParallax(event.gamma / 30, (event.beta - 45) / 30);
+  });
+};
+const requestTilt = () => {
+  if (typeof DeviceOrientationEvent === 'undefined') return;
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission().then((state) => { if (state === 'granted') enableTilt(); }).catch(() => {});
+  } else {
+    enableTilt();
+  }
+};
+if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') enableTilt();
+
+// Кодын дараах intro: одод цугларч нэр бичигдэнэ
+const intro = document.querySelector('#intro');
+const playIntro = () => new Promise((resolve) => {
+  intro.textContent = '';
+  const name = document.createElement('div');
+  name.className = 'intro-name';
+  name.textContent = 'Ануужин';
+  intro.appendChild(name);
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('span');
+    star.className = 'istar';
+    star.textContent = ['✦', '✧', '·'][i % 3];
+    star.style.setProperty('--dx', `${(Math.random() - 0.5) * Math.max(window.innerWidth, 700)}px`);
+    star.style.setProperty('--dy', `${(Math.random() - 0.5) * Math.max(window.innerHeight, 900)}px`);
+    star.style.setProperty('--s', `${10 + Math.random() * 16}px`);
+    star.style.setProperty('--delay', `${Math.random() * 0.6}s`);
+    intro.appendChild(star);
+  }
+  intro.classList.remove('hidden', 'leaving');
+  setTimeout(() => {
+    intro.classList.add('leaving');
+    resolve();
+  }, 2300);
+  setTimeout(() => intro.classList.add('hidden'), 3000);
 });
 
 // Зураг дээр дарахад 2 дахь зураг руу солигдоно

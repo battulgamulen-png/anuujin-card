@@ -80,6 +80,35 @@ body.night .night-sky { opacity: 1; }
 body.night .code-input { border-color: #2f3666; background: #222850; color: var(--ink); }
 body.night .code-input::placeholder { color: #5b6291; }
 body.night .lock-hint, body.night .lock-status { color: #b4b6d6; }
+/* Swipe үед карт дагаж хөдөлнө */
+.card.dragging { transition: none; }
+/* Хазайлтын parallax */
+:root { --px: 0; --py: 0; }
+.star-field, .constellation, .night-sky .moon { transform: translate(calc(var(--px) * 10px), calc(var(--py) * 10px)); transition: transform .25s ease-out; }
+.night-sky .nstar { margin-left: calc(var(--px) * 18px); margin-top: calc(var(--py) * 18px); transition: margin .25s ease-out; }
+.weather-sky { translate: calc(var(--px) * 8px) calc(var(--py) * 8px); transition: translate .25s ease-out; }
+/* Кодын дараах intro */
+.intro { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; background: var(--bg); overflow: hidden; animation: fadeIn .4s ease both; }
+.intro.leaving { animation: introOut .7s ease both; }
+.intro-name { font-family: Caveat, cursive; font-size: clamp(64px, 14vw, 120px); font-weight: 700; color: var(--rose); letter-spacing: 14px; opacity: 0; animation: nameIn 1.6s cubic-bezier(.2,.75,.3,1) .5s both; }
+.intro .istar { position: absolute; left: 50%; top: 50%; color: var(--gold); font-size: var(--s); opacity: 0; animation: gather 1.5s cubic-bezier(.2,.75,.3,1) both; animation-delay: var(--delay); }
+@keyframes gather { 0% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(0, 0) scale(1.2); } }
+@keyframes nameIn { 0% { opacity: 0; letter-spacing: 30px; transform: scale(.9); } 100% { opacity: 1; letter-spacing: 4px; transform: none; } }
+@keyframes introOut { to { opacity: 0; transform: scale(1.04); } }
+/* Онцгой өдөр */
+.special-badge { display: inline-block; margin-bottom: 14px; padding: 6px 14px; border-radius: 999px; background: var(--tint); color: var(--rose); font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; animation: noteIn .5s ease both; }
+.cake { position: relative; width: 74px; height: 58px; margin: 0 auto 14px; }
+.cake .layer { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 8px; background: linear-gradient(#f8c9d6, #e9a2b8); box-shadow: inset 0 -6px 0 #d98ba3; }
+.cake .layer.b { bottom: 0; width: 74px; height: 24px; } .cake .layer.m { bottom: 20px; width: 56px; height: 20px; } .cake .layer.t { bottom: 36px; width: 38px; height: 16px; }
+.cake .candle { position: absolute; left: 50%; bottom: 50px; width: 6px; height: 14px; margin-left: -3px; border-radius: 2px; background: #fff3d6; }
+.cake .flame { position: absolute; left: 50%; bottom: 63px; width: 8px; height: 12px; margin-left: -4px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: radial-gradient(#fff6b5, #f4a460); box-shadow: 0 0 12px 4px #f4a46066; animation: flicker .5s ease-in-out infinite alternate; }
+@keyframes flicker { from { transform: scaleX(.9) translateY(0); } to { transform: scaleX(1.1) translateY(-2px); } }
+.snowfall { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.snowfall span { position: absolute; top: -20px; left: var(--x); color: #ffffffee; font-size: var(--s); text-shadow: 0 0 6px #9fc4e8; animation: snowFall var(--d) linear infinite; animation-delay: var(--delay); }
+/* Story зураг товч */
+.share-button { margin: 14px auto 0; padding: 9px 16px; border-radius: 999px; background: var(--tint); color: var(--rose); font-size: 12px; font-weight: 700; }
+.share-button[disabled] { opacity: .6; cursor: wait; transform: none; }
+body.night .share-button, body.night .special-badge { background: var(--tint); }
 /* Хуудас эргэх шилжилт */
 .card { transition: transform .32s ease-in, opacity .32s ease-in, background-color .9s ease; }
 .card.flip-out { transform: perspective(1200px) rotateY(-70deg); opacity: .4; }
