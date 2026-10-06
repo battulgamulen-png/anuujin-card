@@ -14,6 +14,8 @@ const card = document.querySelector('#card');
 const welcomeTitle = document.querySelector('#welcomeTitle');
 const photoFrame = document.querySelector('#photoFrame');
 const finalNote = document.querySelector('#finalNote');
+const mascot = document.querySelector('#mascot');
+const mascotBubble = document.querySelector('#mascotBubble');
 
 // Плейлист: YouTube ID, нэр, эхлэх секунд
 const PLAYLIST = [
@@ -228,6 +230,7 @@ const loadWeather = async () => {
       `Нар <strong>${daily.sunrise[0].slice(11, 16)} – ${daily.sunset[0].slice(11, 16)}</strong>`,
     ].map((item) => `<span>${item}</span>`).join('');
     paintSky(now.sky, current.is_day === 1);
+    mascot.classList.toggle('rainy', now.sky === 'rain');
 
     const outfit = outfitFor(current.weather_code, current.temperature_2m, current.wind_speed_10m);
     document.querySelector('#weatherOutfit').textContent = `Өнөөдөр: ${outfit.join(', ').toLowerCase()}`;
@@ -295,6 +298,7 @@ const applyNightMode = () => {
   }
   nightState = isNight;
   document.body.classList.toggle('night', isNight);
+  mascot.classList.toggle('sleeping', isNight);
 };
 applyNightMode();
 setInterval(applyNightMode, 60000);
@@ -465,6 +469,7 @@ lockForm.addEventListener('submit', async (event) => {
     typewrite(welcomeTitle);
   }
   goToPage(lock, welcome);
+  setTimeout(showMascot, 600);
 });
 
 // Од, зүрх бууж унах
@@ -486,6 +491,33 @@ const dropConfetti = () => {
     piece.addEventListener('animationend', () => piece.remove());
   }
 };
+
+// Жижиг муур: нээхэд даллана, дуу тоглоход бүжиглэнэ, шөнө унтна, бороотой бол шүхэртэй, дарвал ярина
+const MASCOT_LINES = ['мяу ✦', 'Ануужин!', 'өнөөдөр гоё өдөр', 'хи хи', 'намайг илбээрэй', 'дуу тавь даа', 'чамд баяртай байна ✦', 'инээмсэглээрэй'];
+const MASCOT_SLEEP_LINES = ['zzz… мяу', 'унтаж байна шүү', 'шөнө боллоо…'];
+let bubbleTimer = null;
+const mascotSay = (text) => {
+  mascotBubble.textContent = text;
+  mascotBubble.classList.remove('show');
+  void mascotBubble.offsetWidth;
+  mascotBubble.classList.add('show');
+  clearTimeout(bubbleTimer);
+  bubbleTimer = setTimeout(() => mascotBubble.classList.remove('show'), 2200);
+};
+const showMascot = () => {
+  if (!mascot.classList.contains('hidden')) return;
+  mascot.classList.remove('hidden');
+  mascot.classList.add('waving');
+  setTimeout(() => mascot.classList.remove('waving'), 2600);
+  setTimeout(() => mascotSay('сайн уу, Ануужин ✦'), 700);
+};
+mascot.addEventListener('click', () => {
+  mascot.classList.remove('bouncing');
+  void mascot.offsetWidth;
+  mascot.classList.add('bouncing');
+  const lines = mascot.classList.contains('sleeping') ? MASCOT_SLEEP_LINES : MASCOT_LINES;
+  mascotSay(lines[Math.floor(Math.random() * lines.length)]);
+});
 
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
 const SPECIAL_DAYS = [
@@ -738,6 +770,7 @@ const setPlaying = (playing) => {
   musicPlayer.classList.toggle('is-playing', playing);
   if (playing) startNotes(); else stopNotes();
   card.classList.toggle('music-on', playing);
+  mascot.classList.toggle('dancing', playing);
   playIcon.textContent = playing ? '❚❚' : '▶';
   songStatus.textContent = playing ? 'одоо тоглож байна' : 'дарж тоглуулаарай';
 };

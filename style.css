@@ -109,6 +109,53 @@ body.night .lock-hint, body.night .lock-status { color: #b4b6d6; }
 .share-button { margin: 14px auto 0; padding: 9px 16px; border-radius: 999px; background: var(--tint); color: var(--rose); font-size: 12px; font-weight: 700; }
 .share-button[disabled] { opacity: .6; cursor: wait; transform: none; }
 body.night .share-button, body.night .special-badge { background: var(--tint); }
+/* Жижиг муур (mascot) */
+.mascot { position: fixed; right: 18px; bottom: 16px; z-index: 15; width: 96px; height: 104px; padding: 0; background: none; border: 0; border-radius: 0; cursor: pointer; animation: mascotIn .8s cubic-bezier(.2,.75,.3,1) both; transition: none; }
+.mascot:hover { transform: none; }
+.mascot.hidden { display: none; }
+.mascot .cat { position: absolute; left: 10px; bottom: 0; width: 76px; height: 70px; transform-origin: 50% 100%; }
+.mascot .body { position: absolute; left: 10px; bottom: 0; width: 56px; height: 36px; border-radius: 28px 28px 22px 22px; background: #fbf3ee; box-shadow: inset 0 -5px 0 #efd9cf, 0 6px 12px #593f4a1f; }
+.mascot .head { position: absolute; left: 6px; bottom: 24px; width: 64px; height: 50px; border-radius: 46% 46% 50% 50%; background: #fbf3ee; box-shadow: inset 0 -4px 0 #efd9cf, 0 6px 12px #593f4a1f; transform-origin: 50% 100%; }
+.mascot .ear { position: absolute; top: -12px; width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 20px solid #fbf3ee; }
+.mascot .ear::after { content: ""; position: absolute; left: -6px; top: 7px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid #f4b6c7; }
+.mascot .ear.l { left: 6px; transform: rotate(-12deg); } .mascot .ear.r { right: 6px; transform: rotate(12deg); }
+.mascot .eye { position: absolute; top: 19px; width: 7px; height: 9px; border-radius: 50%; background: #593f4a; animation: blink 4.5s ease-in-out infinite; }
+.mascot .eye.l { left: 18px; } .mascot .eye.r { right: 18px; animation-delay: .1s; }
+.mascot .blush { position: absolute; top: 29px; width: 10px; height: 5px; border-radius: 50%; background: #f8b7c6; opacity: .8; }
+.mascot .blush.l { left: 10px; } .mascot .blush.r { right: 10px; }
+.mascot .nose { position: absolute; top: 29px; left: 50%; width: 5px; height: 4px; margin-left: -2.5px; border-radius: 50%; background: #e86c88; }
+.mascot .mouth { position: absolute; top: 29px; left: 50%; transform: translateX(-50%); color: #8c6a76; font-size: 10px; line-height: 1; font-family: Manrope, sans-serif; }
+.mascot .paw { position: absolute; right: 2px; bottom: 8px; width: 16px; height: 16px; border-radius: 50%; background: #fbf3ee; box-shadow: inset 0 -3px 0 #efd9cf; transform-origin: 20% 80%; }
+.mascot .tail { position: absolute; left: -6px; bottom: 6px; width: 26px; height: 9px; border-radius: 9px; background: #efd9cf; transform-origin: 100% 50%; animation: tailSway 2.4s ease-in-out infinite; }
+.mascot.waving .paw { animation: wave .5s ease-in-out 5; }
+.mascot.dancing .cat { animation: dance .55s ease-in-out infinite alternate; }
+.mascot.dancing .head { animation: headBop .55s ease-in-out infinite alternate; }
+.mascot.sleeping .eye { height: 2px; top: 23px; border-radius: 2px; animation: none; }
+.mascot.sleeping .mouth { opacity: 0; }
+.mascot.sleeping .cat { animation: breatheCat 3s ease-in-out infinite; }
+.mascot .zz { position: absolute; right: 2px; top: 6px; display: none; color: #b9a6e0; font-family: Caveat, cursive; font-weight: 700; }
+.mascot.sleeping .zz { display: block; }
+.mascot .zz i { position: absolute; right: 0; font-style: normal; font-size: 16px; animation: zFloat 2.4s ease-in-out infinite; }
+.mascot .zz i:nth-child(2) { right: 12px; font-size: 12px; animation-delay: 1.2s; }
+.mascot .umbrella { position: absolute; left: 14px; top: -14px; display: none; width: 56px; height: 30px; transform: rotate(-8deg); }
+.mascot.rainy .umbrella { display: block; }
+.mascot .umbrella::before { content: ""; position: absolute; left: 0; top: 0; width: 56px; height: 28px; border-radius: 56px 56px 0 0; background: repeating-linear-gradient(90deg, var(--rose) 0 14px, #ffd6e0 14px 28px); box-shadow: 0 3px 6px #593f4a22; }
+.mascot .umbrella i { position: absolute; left: 27px; top: 26px; width: 2px; height: 46px; background: #8c6a76; border-radius: 2px; }
+.mascot.bouncing .cat { animation: catBounce .6s cubic-bezier(.2,.75,.3,1); }
+.mascot .bubble { position: absolute; right: 74px; bottom: 82px; display: none; width: max-content; max-width: 180px; padding: 8px 12px; border-radius: 14px 14px 4px 14px; background: #fff; color: var(--ink); font-family: Caveat, cursive; font-size: 18px; line-height: 1.1; white-space: normal; text-align: left; box-shadow: 0 8px 18px #593f4a26; animation: noteIn .3s ease both; }
+.mascot .bubble.show { display: block; }
+body.night .mascot .bubble { background: #272c55; color: #eceaf8; }
+body.night .mascot .body, body.night .mascot .head, body.night .mascot .ear, body.night .mascot .paw { filter: brightness(.92); }
+@keyframes mascotIn { from { transform: translateY(120px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes tailSway { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(16deg); } }
+@keyframes wave { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-40deg) translate(-3px, -8px); } }
+@keyframes dance { from { transform: translateY(0) rotate(-6deg); } to { transform: translateY(-8px) rotate(6deg); } }
+@keyframes headBop { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+@keyframes breatheCat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+@keyframes zFloat { 0% { opacity: 0; transform: translate(0, 6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(6px, -18px); } }
+@keyframes catBounce { 0% { transform: scale(1); } 30% { transform: scale(1.12, .88); } 60% { transform: scale(.95, 1.08) translateY(-8px); } 100% { transform: none; } }
+@media (max-width: 600px) { .mascot { right: 8px; bottom: 8px; transform: scale(.82); transform-origin: 100% 100%; } .mascot:hover { transform: scale(.82); } @keyframes mascotIn { from { transform: scale(.82) translateY(120px); opacity: 0; } to { transform: scale(.82); opacity: 1; } } }
 /* Хуудас эргэх шилжилт */
 .card { transition: transform .32s ease-in, opacity .32s ease-in, background-color .9s ease; }
 .card.flip-out { transform: perspective(1200px) rotateY(-70deg); opacity: .4; }
