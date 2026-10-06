@@ -332,7 +332,7 @@ const buildStoryImage = async () => {
   let contentHeight = 490 + bodyLines.length * 52;
   if (data.ratings) contentHeight += 150;
   if (data.lucky) contentHeight += 70;
-  contentHeight += 150;
+  contentHeight += 80;
   const ch = Math.min(H - 360, contentHeight);
   const cy = Math.max(160, Math.round((H - ch) / 2) - 40);
   ctx.fillStyle = 'rgba(255, 253, 251, 0.97)';
@@ -365,7 +365,6 @@ const buildStoryImage = async () => {
     ctx.fillStyle = data.lucky.hex; ctx.beginPath(); ctx.arc(W / 2 - 16 + ctx.measureText(luckyText).width / 2 + 28, y - 10, 12, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1; ctx.stroke();
   }
-  ctx.fillStyle = '#c793a1'; ctx.font = '700 36px Caveat'; ctx.fillText('— чамд зориулав ✦', W / 2, cy + ch - 70);
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
 };
 shareButton.addEventListener('click', async () => {
