@@ -142,7 +142,7 @@ body.night .share-button, body.night .special-badge { background: var(--tint); }
 .mascot .umbrella::before { content: ""; position: absolute; left: 0; top: 0; width: 56px; height: 28px; border-radius: 56px 56px 0 0; background: repeating-linear-gradient(90deg, var(--rose) 0 14px, #ffd6e0 14px 28px); box-shadow: 0 3px 6px #593f4a22; }
 .mascot .umbrella i { position: absolute; left: 27px; top: 26px; width: 2px; height: 46px; background: #8c6a76; border-radius: 2px; }
 .mascot.bouncing .cat { animation: catBounce .6s cubic-bezier(.2,.75,.3,1); }
-.mascot .bubble { position: absolute; right: 74px; bottom: 82px; display: none; width: max-content; max-width: 180px; padding: 8px 12px; border-radius: 14px 14px 4px 14px; background: #fff; color: var(--ink); font-family: Caveat, cursive; font-size: 18px; line-height: 1.1; white-space: normal; text-align: left; box-shadow: 0 8px 18px #593f4a26; animation: noteIn .3s ease both; }
+.mascot .bubble { position: absolute; right: 74px; bottom: 82px; display: none; width: max-content; max-width: 210px; padding: 8px 12px; border-radius: 14px 14px 4px 14px; background: #fff; color: var(--ink); font-family: Caveat, cursive; font-size: 18px; line-height: 1.1; white-space: normal; text-align: left; box-shadow: 0 8px 18px #593f4a26; animation: noteIn .3s ease both; }
 .mascot .bubble.show { display: block; }
 body.night .mascot .bubble { background: #272c55; color: #eceaf8; }
 body.night .mascot .body, body.night .mascot .head, body.night .mascot .ear, body.night .mascot .paw { filter: brightness(.92); }
