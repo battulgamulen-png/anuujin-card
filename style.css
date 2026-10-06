@@ -1,7 +1,7 @@
 :root { --ink: #593f4a; --rose: #e86c88; --gold: #e9aa78; --tint: #fff1f3; --paper: #fff8f3; --bg: #fbe5e9; --glow1: #fff5cc; --glow2: #f8bdd0; --card: #fffdfb; }
 /* Хуудас бүрийн өнгө */
 body[data-theme="zodiac"] { --rose: #9b7bd8; --gold: #d9b45a; --tint: #f3eefc; --bg: #ebe4f7; --glow1: #fff3c4; --glow2: #cdbdf0; --card: #fdfcff; }
-body[data-theme="farewell"] { --rose: #ee8a52; --gold: #e0a24a; --tint: #fff0e6; --bg: #fbe6d6; --glow1: #fff3bf; --glow2: #f7c3a6; --card: #fffcf8; }
+body[data-theme="farewell"] { --rose: #c25b9c; --gold: #e9aa78; --tint: #f9e9f3; --bg: #f3e0ec; --glow1: #fff1c9; --glow2: #e6b3d4; --card: #fffbfd; }
 body[data-theme="reply"] { --rose: #4fae8a; --gold: #e0b35a; --tint: #e9f6ef; --bg: #e1f1e8; --glow1: #fff6c8; --glow2: #bfe6d1; --card: #fbfefc; }
 body[data-theme="weather"] { --rose: #4f9bd9; --gold: var(--gold); --tint: #eaf3fb; --bg: #e2eefa; --glow1: #fff8c9; --glow2: #b9d8f3; --card: #fbfdff; }
 * { box-sizing: border-box; }
@@ -34,7 +34,7 @@ h1 { font-size: clamp(42px, 8vw, 62px); } h1 em, h2 em { color: var(--rose); fon
 .zodiac, .farewell, .weather, .reply { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
 /* Шөнийн горим (18:00–06:00, хөтчийн цагаар) */
 body.night { --ink: #e9e7f7; --card: #1c2142; --tint: #272c55; --bg: #11152f; --glow1: #2a2f66; --glow2: #46305f; --gold: #f0c66a; }
-body.night[data-theme="welcome"] { --rose: #f28ca3; } body.night[data-theme="zodiac"] { --rose: #b59cf2; } body.night[data-theme="farewell"] { --rose: #f5a46f; } body.night[data-theme="weather"] { --rose: #7cb8ee; } body.night[data-theme="reply"] { --rose: #6fcfa6; }
+body.night[data-theme="welcome"] { --rose: #f28ca3; } body.night[data-theme="zodiac"] { --rose: #b59cf2; } body.night[data-theme="farewell"] { --rose: #e28fcb; } body.night[data-theme="weather"] { --rose: #7cb8ee; } body.night[data-theme="reply"] { --rose: #6fcfa6; }
 body.night-switching, body.night-switching .card, body.night-switching .horoscope-card, body.night-switching .music-player, body.night-switching .reply-form textarea, body.night-switching .back, body.night-switching .star-ratings div, body.night-switching .night-sky { transition-duration: 2.5s; transition-property: background-color, color, border-color, box-shadow, opacity, background; }
 body.night::before, body.night::after { border-color: #ffffff1a; }
 body.night .card { border-color: #2a3060; box-shadow: 0 24px 70px #00000066; }
@@ -136,7 +136,7 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .star-mark { color: var(--gold); font-size: .5em; vertical-align: middle; }
 .music-icon { color: var(--gold); font-family: Caveat, cursive; font-size: 47px; line-height: 1; }
 .farewell-actions { margin-top: 25px; }
-.music-player { display: flex; align-items: center; gap: 17px; width: 100%; max-width: 420px; margin: 0 auto; padding: 17px; border: 1px solid #f2dbe2; border-radius: 20px; background: linear-gradient(135deg, #fff4f2, #fffaf1); text-align: left; box-shadow: 0 10px 25px #d98ba31c; }
+.music-player { display: flex; align-items: center; gap: 17px; width: 100%; max-width: 420px; margin: 0 auto; padding: 17px; border: 1px solid #f2dbe2; border-radius: 20px; background: linear-gradient(135deg, var(--tint), var(--card)); text-align: left; box-shadow: 0 10px 25px #d98ba31c; }
 .record { display: grid; flex: 0 0 77px; width: 77px; height: 77px; place-items: center; border-radius: 50%; background: repeating-radial-gradient(circle, #593f4a 0 2px, #73515e 3px 4px); box-shadow: 0 5px 11px #593f4a36; animation: spin 6s linear infinite paused; }
 .music-player.is-playing .record { animation-play-state: running; }
 .music-player { position: relative; }
