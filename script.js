@@ -366,7 +366,6 @@ const buildStoryImage = async () => {
     ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1; ctx.stroke();
   }
   ctx.fillStyle = '#c793a1'; ctx.font = '700 36px Caveat'; ctx.fillText('— чамд зориулав ✦', W / 2, cy + ch - 70);
-  ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '600 24px Manrope'; ctx.fillText('battulgamulen-png.github.io/anuujin-card', W / 2, H - 90);
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
 };
 shareButton.addEventListener('click', async () => {
