@@ -25,6 +25,10 @@ const finalNote = document.querySelector('#finalNote');
 
 // Плейлист: YouTube ID, нэр, эхлэх секунд
 const PLAYLIST = [
+  { id: 'mS8LtfyQlno', title: 'A-Sound — Одод тэнгэртээ', start: 0 },
+  { id: 'lBGATo7wUI0', title: 'Choi Joo — Ахин дахин дурламаар', start: 0 },
+  { id: 'jSVejz83HQ8', title: 'Mo — Өдөр шөнө', start: 0 },
+  { id: 'mMfLzzHmN7g', title: 'Choi Joo — Thousand One Flowers', start: 0 },
   { id: 'Uv4zZpWDr9c', title: 'A-Sound — Хэлээгүй ч…', start: 0 },
   { id: '0BOxxsscCAA', title: 'A-Sound — Нуугдах салхи', start: 0 },
   { id: 'NXolApL1GIo', title: 'Becca — Comfy', start: 0 },
