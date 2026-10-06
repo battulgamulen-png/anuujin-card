@@ -493,8 +493,10 @@ const dropConfetti = () => {
 };
 
 // Жижиг муур: нээхэд даллана, дуу тоглоход бүжиглэнэ, шөнө унтна, бороотой бол шүхэртэй, дарвал ярина
-const MASCOT_LINES = ['мяу ✦', 'Ануужин!', 'өнөөдөр гоё өдөр', 'хи хи', 'намайг илбээрэй', 'дуу тавь даа', 'чамд баяртай байна ✦', 'инээмсэглээрэй'];
-const MASCOT_SLEEP_LINES = ['zzz… мяу', 'унтаж байна шүү', 'шөнө боллоо…'];
+// Муур дээр дарахад хэлэх үгс (Тэмүүлэн бичнэ)
+const MASCOT_LINES = [];
+// Шөнө унтаж байхдаа хэлэх үгс
+const MASCOT_SLEEP_LINES = [];
 let bubbleTimer = null;
 const mascotSay = (text) => {
   mascotBubble.textContent = text;
@@ -516,7 +518,7 @@ mascot.addEventListener('click', () => {
   void mascot.offsetWidth;
   mascot.classList.add('bouncing');
   const lines = mascot.classList.contains('sleeping') ? MASCOT_SLEEP_LINES : MASCOT_LINES;
-  mascotSay(lines[Math.floor(Math.random() * lines.length)]);
+  if (lines.length) mascotSay(lines[Math.floor(Math.random() * lines.length)]);
 });
 
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
