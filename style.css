@@ -313,7 +313,18 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .notify-button { margin-top: 18px; padding: 9px 16px; border-radius: 999px; background: var(--tint); color: var(--rose); font-size: 12px; font-weight: 700; }
 .notify-button.on { background: var(--rose); color: #fff; }
 .notify-button.hidden { display: none; }
-body.night .page-dots { margin-top: 24px; }
+body.night /* Зөвшөөрлийн dialog */
+.dialog-backdrop { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 20px; background: #3a2a3f66; backdrop-filter: blur(4px); animation: fadeIn .25s ease both; }
+.dialog-backdrop.hidden { display: none; }
+.dialog { width: min(100%, 360px); padding: 28px 24px 22px; border-radius: 22px; background: var(--card); text-align: center; box-shadow: 0 24px 70px #00000040; animation: noteIn .3s ease both; }
+.dialog-icon { color: var(--gold); font-size: 30px; line-height: 1; }
+.dialog h3 { margin: 8px 0 8px; font-family: Caveat, cursive; font-size: 34px; color: var(--rose); line-height: 1; }
+.dialog p { margin: 0 0 18px; color: #765c66; font-size: 13.5px; line-height: 1.6; }
+body.night .dialog p { color: #b4b6d6; }
+.dialog-actions { display: flex; justify-content: center; gap: 10px; }
+.dialog-later { width: auto; padding: 0 18px; font-size: 13px; }
+.dialog-accept { padding: 12px 20px; font-size: 13px; }
+.page-dots { margin-top: 24px; }
 .farewell .page-dots, .weather .page-dots, .reply .page-dots, .zodiac .page-dots { margin-top: 26px; }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: var(--rose); }
 @keyframes charIn { from { opacity:0; transform:translateY(8px) rotate(-4deg); } to { opacity:1; transform:none; } }

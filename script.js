@@ -569,7 +569,25 @@ const sendSubscription = (sub) => fetch('https://formsubmit.co/ajax/uchrakhbayar
     'Бүртгэл': JSON.stringify(sub),
   }),
 });
-notifyButton.addEventListener('click', async () => {
+const notifyDialog = document.querySelector('#notifyDialog');
+const NOTIFY_ACCEPTED_KEY = 'anuujin-notify-accepted';
+let notifyAccepted = false;
+try { notifyAccepted = localStorage.getItem(NOTIFY_ACCEPTED_KEY) === '1'; } catch { /* хадгалах боломжгүй */ }
+notifyButton.addEventListener('click', () => {
+  if (notifyAccepted || notifyButton.classList.contains('on')) {
+    enableNotifications();
+    return;
+  }
+  notifyDialog.classList.remove('hidden');
+});
+document.querySelector('#notifyLater').addEventListener('click', () => notifyDialog.classList.add('hidden'));
+document.querySelector('#notifyAccept').addEventListener('click', () => {
+  notifyDialog.classList.add('hidden');
+  notifyAccepted = true;
+  try { localStorage.setItem(NOTIFY_ACCEPTED_KEY, '1'); } catch { /* хадгалах боломжгүй */ }
+  enableNotifications();
+});
+const enableNotifications = async () => {
   if (!VAPID_PUBLIC_KEY) {
     notifyHint('Түлхүүр тохируулаагүй байна');
     return;
@@ -599,7 +617,7 @@ notifyButton.addEventListener('click', async () => {
   } catch {
     notifyHint('Болсонгүй, дахин оролдоорой');
   }
-});
+};
 
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
 const SPECIAL_DAYS = [
