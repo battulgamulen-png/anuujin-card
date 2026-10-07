@@ -464,6 +464,7 @@ lockForm.addEventListener('submit', async (event) => {
   }
   lockStatus.textContent = '';
   codeInput.blur();
+  notifyVisit();
   if (!titleTyped) {
     titleTyped = true;
     typewrite(welcomeTitle);
@@ -592,6 +593,24 @@ const goToPage = (from, to, backward = false) => {
   }, 320);
 };
 
+
+// Ануужин орох бүрт Тэмүүлэнгийн имэйл рүү мэдэгдэл явуулна
+const notifyVisit = () => {
+  const now = new Date();
+  const dalian = now.toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai', hour12: false });
+  const device = /iPhone|iPad|Android/i.test(navigator.userAgent) ? 'утаснаас' : 'компьютерээс';
+  fetch('https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      _subject: 'Ануужин орлоо ✦',
+      _template: 'table',
+      _captcha: 'false',
+      'Орсон цаг': `${dalian} (Далианы цагаар)`,
+      'Төхөөрөмж': device,
+    }),
+  }).catch(() => {});
+};
 
 // Хариу бичих: FormSubmit-ээр имэйл рүү илгээнэ
 const REPLY_ENDPOINT = 'https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com';
