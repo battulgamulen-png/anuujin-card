@@ -531,7 +531,14 @@ mascot.addEventListener('click', () => {
 // Push мэдэгдэл: утсыг бүртгэж, бүртгэлийг Тэмүүлэнгийн имэйл рүү явуулна
 const VAPID_PUBLIC_KEY = 'BMDl9F9bfcKhyIGWJm9r8yKzyUlFF2C_ttbSHgCEJY0wKa7Qtm-R-kpbcIzycadQiXhyEMFSpK81-fXc4JpbBdw';
 const notifyButton = document.querySelector('#notifyButton');
-const notifyStatus = document.querySelector('#notifyStatus');
+let notifyLabelTimer = null;
+const notifyHint = (text) => {
+  notifyButton.textContent = text;
+  clearTimeout(notifyLabelTimer);
+  notifyLabelTimer = setTimeout(() => {
+    notifyButton.textContent = notifyButton.classList.contains('on') ? 'Мэдэгдэл асаалттай ✦' : 'Мэдэгдэл асаах ✦';
+  }, 4500);
+};
 const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const urlBase64ToUint8Array = (base64) => {
@@ -564,21 +571,21 @@ const sendSubscription = (sub) => fetch('https://formsubmit.co/ajax/uchrakhbayar
 });
 notifyButton.addEventListener('click', async () => {
   if (!VAPID_PUBLIC_KEY) {
-    notifyStatus.textContent = 'Мэдэгдлийн түлхүүр хараахан тохируулаагүй байна';
+    notifyHint('Түлхүүр тохируулаагүй байна');
     return;
   }
   if (isIOS && !isStandalone) {
-    notifyStatus.textContent = 'iPhone дээр: доод талын Share товч → "Add to Home Screen" дараад, нүүр дэлгэцээс нээгээд дахин дараарай';
+    notifyHint('Share → Add to Home Screen хийгээд тэндээс нээгээрэй');
     return;
   }
   if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
-    notifyStatus.textContent = 'Энэ хөтөч мэдэгдэл дэмжихгүй байна';
+    notifyHint('Энэ хөтөч дэмжихгүй байна');
     return;
   }
   try {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      notifyStatus.textContent = 'Мэдэгдлийг зөвшөөрөөгүй байна';
+      notifyHint('Зөвшөөрөл өгөөгүй байна');
       return;
     }
     const reg = swRegistration || await navigator.serviceWorker.ready;
@@ -587,11 +594,10 @@ notifyButton.addEventListener('click', async () => {
     const response = await sendSubscription(sub.toJSON());
     const result = await response.json().catch(() => ({}));
     if (result.success !== 'true' && result.success !== true) throw new Error('send');
-    notifyButton.textContent = 'Мэдэгдэл асаалттай ✦';
     notifyButton.classList.add('on');
-    notifyStatus.textContent = 'Бүртгэгдлээ ✦ Тэмүүлэн идэвхжүүлмэгц мэдэгдэл ирж эхэлнэ';
+    notifyHint('Бүртгэгдлээ ✦');
   } catch {
-    notifyStatus.textContent = 'Болсонгүй, дахин оролдоорой';
+    notifyHint('Болсонгүй, дахин оролдоорой');
   }
 });
 
