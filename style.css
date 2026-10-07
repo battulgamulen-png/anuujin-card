@@ -5,8 +5,9 @@ body[data-theme="farewell"] { --rose: #c25b9c; --gold: #e9aa78; --tint: #f9e9f3;
 body[data-theme="reply"] { --rose: #4fae8a; --gold: #e0b35a; --tint: #e9f6ef; --bg: #e1f1e8; --glow1: #fff6c8; --glow2: #bfe6d1; --card: #fbfefc; }
 body[data-theme="weather"] { --rose: #4f9bd9; --gold: var(--gold); --tint: #eaf3fb; --bg: #e2eefa; --glow1: #fff8c9; --glow2: #b9d8f3; --card: #fbfdff; }
 * { box-sizing: border-box; }
+html { overflow-x: hidden; }
 body {
-  min-height: 100vh; margin: 0; display: grid; place-items: center; overflow-x: hidden;
+  min-height: 100vh; min-height: 100dvh; margin: 0; display: grid; place-items: center; overflow-x: hidden;
   color: var(--ink); font-family: Manrope, sans-serif;
   background: radial-gradient(circle at 20% 18%, var(--glow1) 0 3%, transparent 18%), radial-gradient(circle at 82% 80%, var(--glow2) 0 3%, transparent 22%), var(--bg);
   transition: background-color .9s ease;
@@ -155,7 +156,7 @@ body.night .mascot .body, body.night .mascot .head, body.night .mascot .ear, bod
 @keyframes breatheCat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
 @keyframes zFloat { 0% { opacity: 0; transform: translate(0, 6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(6px, -18px); } }
 @keyframes catBounce { 0% { transform: scale(1); } 30% { transform: scale(1.12, .88); } 60% { transform: scale(.95, 1.08) translateY(-8px); } 100% { transform: none; } }
-@media (max-width: 600px) { .mascot { right: 8px; bottom: 8px; transform: scale(.82); transform-origin: 100% 100%; } .mascot:hover { transform: scale(.82); } @keyframes mascotIn { from { transform: scale(.82) translateY(120px); opacity: 0; } to { transform: scale(.82); opacity: 1; } } }
+@media (max-width: 600px) { .mascot { right: 6px; bottom: 6px; transform: scale(.74); transform-origin: 100% 100%; } .mascot:hover { transform: scale(.74); } @keyframes mascotIn { from { transform: scale(.74) translateY(120px); opacity: 0; } to { transform: scale(.74); opacity: 1; } } }
 /* Хуудас эргэх шилжилт */
 .card { transition: transform .32s ease-in, opacity .32s ease-in, background-color .9s ease; }
 .card.flip-out { transform: perspective(1200px) rotateY(-70deg); opacity: .4; }
@@ -271,9 +272,9 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .weather-days .day-icon { display: block; margin: 3px 0 1px; color: var(--gold); font-size: 20px; line-height: 1; font-variant-emoji: text; }
 .weather-compare strong { color: #593f4a; }
 /* Цаг агаарын нөхцөлөөс хамаарсан амьд дэвсгэр */
-.weather-sky { position: absolute; inset: -20px -30px; overflow: hidden; pointer-events: none; z-index: 0; border-radius: 24px; }
-.weather-sky .sun { position: absolute; top: -70px; right: -70px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, #ffe7b5 0 22%, transparent 60%); }
-.weather-sky .rays { position: absolute; top: -110px; right: -110px; width: 340px; height: 340px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #ffd9a0 0 5deg, transparent 5deg 16deg); -webkit-mask: radial-gradient(circle, transparent 28%, #000 32%, transparent 70%); mask: radial-gradient(circle, transparent 28%, #000 32%, transparent 70%); opacity: .45; animation: spin 48s linear infinite; }
+.weather-sky { position: absolute; inset: -12px 0; overflow: hidden; pointer-events: none; z-index: 0; border-radius: 24px; }
+.weather-sky .sun { position: absolute; top: -60px; right: -40px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, #ffe7b5 0 22%, transparent 60%); }
+.weather-sky .rays { position: absolute; top: -100px; right: -80px; width: 340px; height: 340px; border-radius: 50%; background: repeating-conic-gradient(from 0deg, #ffd9a0 0 5deg, transparent 5deg 16deg); -webkit-mask: radial-gradient(circle, transparent 28%, #000 32%, transparent 70%); mask: radial-gradient(circle, transparent 28%, #000 32%, transparent 70%); opacity: .45; animation: spin 48s linear infinite; }
 .weather-sky .cloud { position: absolute; width: 110px; height: 34px; border-radius: 999px; background: #fff; opacity: .5; box-shadow: 0 6px 18px #d9a3b820; animation: drift var(--d) linear infinite; animation-delay: var(--delay); top: var(--y); left: -140px; }
 .weather-sky .cloud::before, .weather-sky .cloud::after { content: ""; position: absolute; bottom: 8px; border-radius: 50%; background: #fff; }
 .weather-sky .cloud::before { left: 18px; width: 46px; height: 46px; } .weather-sky .cloud::after { left: 52px; width: 36px; height: 36px; }
@@ -338,7 +339,7 @@ body.night .dialog p { color: #b4b6d6; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; } }
 @media (max-width: 600px) {
   .constellation { top: -12px; right: 4px; width: 66px; }
-  body { display: grid; min-height: 100vh; padding: 12px 0; overflow-y: auto; }
+  body { display: grid; min-height: 100vh; min-height: 100dvh; padding: 12px 0 96px; overflow-y: auto; }
   .card { width: calc(100vw - 24px); min-height: 0; margin: 0; padding: 48px 20px 28px; border-radius: 24px; }
   .card::before { inset: 9px; border-radius: 17px; }
   .welcome { min-height: 0; }
