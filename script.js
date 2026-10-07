@@ -528,6 +528,73 @@ mascot.addEventListener('click', () => {
   if (lines.length) mascotSay(lines[Math.floor(Math.random() * lines.length)]);
 });
 
+// Push мэдэгдэл: утсыг бүртгэж, бүртгэлийг Тэмүүлэнгийн имэйл рүү явуулна
+const VAPID_PUBLIC_KEY = 'BMDl9F9bfcKhyIGWJm9r8yKzyUlFF2C_ttbSHgCEJY0wKa7Qtm-R-kpbcIzycadQiXhyEMFSpK81-fXc4JpbBdw';
+const notifyButton = document.querySelector('#notifyButton');
+const notifyStatus = document.querySelector('#notifyStatus');
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const urlBase64ToUint8Array = (base64) => {
+  const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+  const raw = atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
+  return Uint8Array.from([...raw].map((ch) => ch.charCodeAt(0)));
+};
+let swRegistration = null;
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then((reg) => {
+    swRegistration = reg;
+    return reg.pushManager.getSubscription();
+  }).then((sub) => {
+    if (sub) {
+      notifyButton.textContent = 'Мэдэгдэл асаалттай ✦';
+      notifyButton.classList.add('on');
+    }
+  }).catch(() => {});
+}
+const sendSubscription = (sub) => fetch('https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+  body: JSON.stringify({
+    _subject: 'Push бүртгэл ✦',
+    _template: 'table',
+    _captcha: 'false',
+    'Төхөөрөмж': navigator.userAgent,
+    'Бүртгэл': JSON.stringify(sub),
+  }),
+});
+notifyButton.addEventListener('click', async () => {
+  if (!VAPID_PUBLIC_KEY) {
+    notifyStatus.textContent = 'Мэдэгдлийн түлхүүр хараахан тохируулаагүй байна';
+    return;
+  }
+  if (isIOS && !isStandalone) {
+    notifyStatus.textContent = 'iPhone дээр: доод талын Share товч → "Add to Home Screen" дараад, нүүр дэлгэцээс нээгээд дахин дараарай';
+    return;
+  }
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+    notifyStatus.textContent = 'Энэ хөтөч мэдэгдэл дэмжихгүй байна';
+    return;
+  }
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      notifyStatus.textContent = 'Мэдэгдлийг зөвшөөрөөгүй байна';
+      return;
+    }
+    const reg = swRegistration || await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) });
+    const response = await sendSubscription(sub.toJSON());
+    const result = await response.json().catch(() => ({}));
+    if (result.success !== 'true' && result.success !== true) throw new Error('send');
+    notifyButton.textContent = 'Мэдэгдэл асаалттай ✦';
+    notifyButton.classList.add('on');
+    notifyStatus.textContent = 'Бүртгэгдлээ ✦ Тэмүүлэн идэвхжүүлмэгц мэдэгдэл ирж эхэлнэ';
+  } catch {
+    notifyStatus.textContent = 'Болсонгүй, дахин оролдоорой';
+  }
+});
+
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
 const SPECIAL_DAYS = [
   { key: 'birthday', match: (m, d) => m === 6 && d === 30, badge: 'Төрсөн өдрийн мэнд ✦', title: 'Төрсөн өдрийн мэнд<br /><em>Ануужин минь!</em>', effect: 'confetti', cake: true },

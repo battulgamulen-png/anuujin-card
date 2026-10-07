@@ -6,6 +6,12 @@
     <title>Ануужингийн өдөр бүрийн зурхай</title>
     <meta name="description" content="Мэлхийн ордны өдөр бүрийн зурхай, өдөр бүр шинэчлэгдэнэ" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Зурхай" />
+    <meta name="theme-color" content="#e86c88" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Ануужингийн өдөр бүрийн зурхай ♋" />
     <meta property="og:description" content="Мэлхийн ордны өдөр бүрийн зурхай, өдөр бүр шинэчлэгдэнэ" />
@@ -17,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=15" />
+    <link rel="stylesheet" href="style.css?v=16" />
   </head>
   <body data-theme="welcome">
     <div class="night-sky" id="nightSky" aria-hidden="true"><div class="moon"></div></div>
@@ -62,6 +68,8 @@
         <div class="special-badge hidden" id="specialBadge"></div>
         <h1 class="typewriter" id="welcomeTitle">Ануужин хүүхдэд<br />өглөө, өдөр, оройн<br /><em>мэээээнд!</em></h1>
         <div class="secret-note hidden" id="secretNote" aria-live="polite">P.S. Өнөөдөр заавал инээмсэглээрэй ✦</div>
+        <button type="button" class="notify-button" id="notifyButton">Мэдэгдэл асаах ✦</button>
+        <p class="notify-status" id="notifyStatus"></p>
         <div class="page-dots" aria-label="1-р хуудас, нийт 5">
           <span class="active"></span><span></span><span></span><span></span><span></span>
         </div>
@@ -174,6 +182,6 @@
         </div>
       </section>
     </main>
-    <script src="script.js?v=31"></script>
+    <script src="script.js?v=32"></script>
   </body>
 </html>

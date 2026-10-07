@@ -310,6 +310,11 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .swipe-hint.hidden { display: none; }
 @keyframes hintPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 .card.dragging { user-select: none; }
+.notify-button { margin-top: 22px; padding: 9px 16px; border-radius: 999px; background: var(--tint); color: var(--rose); font-size: 12px; font-weight: 700; }
+.notify-button.on { background: var(--rose); color: #fff; }
+.notify-button.hidden { display: none; }
+.notify-status { min-height: 16px; max-width: 320px; margin: 8px auto 0; color: #b07f8e; font-size: 12px; line-height: 1.4; }
+body.night .notify-status { color: #b4b6d6; }
 .page-dots { margin-top: 24px; }
 .farewell .page-dots, .weather .page-dots, .reply .page-dots, .zodiac .page-dots { margin-top: 26px; }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: var(--rose); }
