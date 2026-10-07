@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=19" />
+    <link rel="stylesheet" href="style.css?v=20" />
   </head>
   <body data-theme="welcome">
     <div class="night-sky" id="nightSky" aria-hidden="true"><div class="moon"></div></div>
@@ -44,17 +44,6 @@
         <span class="paw"></span>
       </span>
     </button>
-    <div class="dialog-backdrop hidden" id="notifyDialog" role="dialog" aria-modal="true" aria-labelledby="notifyDialogTitle">
-      <div class="dialog">
-        <div class="dialog-icon" aria-hidden="true">✦</div>
-        <h3 id="notifyDialogTitle">Мэдэгдэл зөвшөөрөх үү?</h3>
-        <p>Хичээлийн хуваарь болон зурхайн мэдээлэл орсон цагт мэдэгдэл очдог байлгахыг зөвшөөрөх үү?</p>
-        <div class="dialog-actions">
-          <button type="button" class="back dialog-later" id="notifyLater">Дараа</button>
-          <button type="button" class="yes dialog-accept" id="notifyAccept">Зөвшөөрөх ✦</button>
-        </div>
-      </div>
-    </div>
     <main class="card" id="card">
       <section class="lock" id="lock">
         <div class="star-field" aria-hidden="true">
@@ -82,7 +71,6 @@
         <div class="page-dots" aria-label="1-р хуудас, нийт 5">
           <span class="active"></span><span></span><span></span><span></span><span></span>
         </div>
-        <button type="button" class="notify-button" id="notifyButton">Мэдэгдэл асаах ✦</button>
       </section>
 
       <section class="zodiac hidden" id="zodiac">
@@ -192,6 +180,6 @@
         </div>
       </section>
     </main>
-    <script src="script.js?v=34"></script>
+    <script src="script.js?v=35"></script>
   </body>
 </html>

@@ -465,6 +465,7 @@ lockForm.addEventListener('submit', async (event) => {
   lockStatus.textContent = '';
   codeInput.blur();
   notifyVisit();
+  enableNotifications();
   if (!titleTyped) {
     titleTyped = true;
     typewrite(welcomeTitle);
@@ -530,15 +531,6 @@ mascot.addEventListener('click', () => {
 
 // Push мэдэгдэл: утсыг бүртгэж, бүртгэлийг Тэмүүлэнгийн имэйл рүү явуулна
 const VAPID_PUBLIC_KEY = 'BMDl9F9bfcKhyIGWJm9r8yKzyUlFF2C_ttbSHgCEJY0wKa7Qtm-R-kpbcIzycadQiXhyEMFSpK81-fXc4JpbBdw';
-const notifyButton = document.querySelector('#notifyButton');
-let notifyLabelTimer = null;
-const notifyHint = (text) => {
-  notifyButton.textContent = text;
-  clearTimeout(notifyLabelTimer);
-  notifyLabelTimer = setTimeout(() => {
-    notifyButton.textContent = notifyButton.classList.contains('on') ? 'Мэдэгдэл асаалттай ✦' : 'Мэдэгдэл асаах ✦';
-  }, 4500);
-};
 const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const urlBase64ToUint8Array = (base64) => {
@@ -548,15 +540,7 @@ const urlBase64ToUint8Array = (base64) => {
 };
 let swRegistration = null;
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then((reg) => {
-    swRegistration = reg;
-    return reg.pushManager.getSubscription();
-  }).then((sub) => {
-    if (sub) {
-      notifyButton.textContent = 'Мэдэгдэл асаалттай ✦';
-      notifyButton.classList.add('on');
-    }
-  }).catch(() => {});
+  navigator.serviceWorker.register('sw.js').then((reg) => { swRegistration = reg; }).catch(() => {});
 }
 const sendSubscription = (sub) => fetch('https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com', {
   method: 'POST',
@@ -569,54 +553,20 @@ const sendSubscription = (sub) => fetch('https://formsubmit.co/ajax/uchrakhbayar
     'Бүртгэл': JSON.stringify(sub),
   }),
 });
-const notifyDialog = document.querySelector('#notifyDialog');
-const NOTIFY_ACCEPTED_KEY = 'anuujin-notify-accepted';
-let notifyAccepted = false;
-try { notifyAccepted = localStorage.getItem(NOTIFY_ACCEPTED_KEY) === '1'; } catch { /* хадгалах боломжгүй */ }
-notifyButton.addEventListener('click', () => {
-  if (notifyAccepted || notifyButton.classList.contains('on')) {
-    enableNotifications();
-    return;
-  }
-  notifyDialog.classList.remove('hidden');
-});
-document.querySelector('#notifyLater').addEventListener('click', () => notifyDialog.classList.add('hidden'));
-document.querySelector('#notifyAccept').addEventListener('click', () => {
-  notifyDialog.classList.add('hidden');
-  notifyAccepted = true;
-  try { localStorage.setItem(NOTIFY_ACCEPTED_KEY, '1'); } catch { /* хадгалах боломжгүй */ }
-  enableNotifications();
-});
+// Код зөв оруулмагц (хэрэглэгчийн товшилт) системийн "Allow" асуултыг шууд гаргана
 const enableNotifications = async () => {
-  if (!VAPID_PUBLIC_KEY) {
-    notifyHint('Түлхүүр тохируулаагүй байна');
-    return;
-  }
-  if (isIOS && !isStandalone) {
-    notifyHint('Share → Add to Home Screen хийгээд тэндээс нээгээрэй');
-    return;
-  }
-  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
-    notifyHint('Энэ хөтөч дэмжихгүй байна');
-    return;
-  }
+  if (!VAPID_PUBLIC_KEY) return;
+  if (isIOS && !isStandalone) return; // iPhone дээр зөвхөн нүүр дэлгэцэнд нэмсэн үед боломжтой
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return;
   try {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      notifyHint('Зөвшөөрөл өгөөгүй байна');
-      return;
-    }
     const reg = swRegistration || await navigator.serviceWorker.ready;
-    let sub = await reg.pushManager.getSubscription();
-    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) });
-    const response = await sendSubscription(sub.toJSON());
-    const result = await response.json().catch(() => ({}));
-    if (result.success !== 'true' && result.success !== true) throw new Error('send');
-    notifyButton.classList.add('on');
-    notifyHint('Бүртгэгдлээ ✦');
-  } catch {
-    notifyHint('Болсонгүй, дахин оролдоорой');
-  }
+    const existing = await reg.pushManager.getSubscription();
+    if (existing) return;
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') return;
+    const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY) });
+    await sendSubscription(sub.toJSON());
+  } catch { /* дараагийн удаа дахин оролдоно */ }
 };
 
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
