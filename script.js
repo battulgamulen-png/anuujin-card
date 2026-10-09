@@ -3,6 +3,7 @@ const welcome = document.querySelector('#welcome');
 const zodiac = document.querySelector('#zodiac');
 const farewell = document.querySelector('#farewell');
 const weather = document.querySelector('#weather');
+const schedule = document.querySelector('#schedule');
 const reply = document.querySelector('#reply');
 const secretStar = document.querySelector('#secretStar');
 const secretNote = document.querySelector('#secretNote');
@@ -569,6 +570,104 @@ const enableNotifications = async () => {
   } catch { /* дараагийн удаа дахин оролдоно */ }
 };
 
+// Хичээлийн хуваарь (Далианы цагаар). SEMESTER_START = 1-р долоо хоногийн Даваа гараг
+const SEMESTER_START = '2026-09-07';
+const SLOTS = [['08:10', '09:45'], ['10:00', '11:35'], ['13:15', '14:50'], ['15:05', '16:40']];
+const COURSES = {
+  shangfa: { zh: '商法总论', mn: 'Худалдааны эрх зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш' },
+  minfa: { zh: '民法总论', mn: 'Иргэний эрх зүйн ерөнхий онол', teacher: '郭佳玮 · Го Цзявэй багш' },
+  qinquan: { zh: '侵权法', mn: 'Гэм хорын эрх зүй', teacher: '王爱群 · Ван Айцюнь багш' },
+  faxue: { zh: '法学通论', mn: 'Хууль зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш' },
+  hanyu5: { zh: '汉语综合5', mn: 'Хятад хэлний нэгдсэн хичээл 5', teacher: '张亚男 · Жан Янань багш' },
+  kouyu5: { zh: '汉语口语5', mn: 'Хятад хэлний ярианы хичээл 5', teacher: '张珍华 · Жан Жэньхуа багш' },
+  tingli4: { zh: '汉语听力4', mn: 'Хятад хэлний сонсголын хичээл 4', teacher: '刘文飞 · Лю Вэньфэй багш' },
+  hsk: { zh: 'HSK辅导', mn: 'HSK шалгалтын бэлтгэл', teacher: '程嘉慧 · Чэн Цзяхуэй багш' },
+};
+const DEFAULT_ROOM = '广雅楼204 · Гуанъя байр, 204';
+const SCHEDULE = {
+  1: [{ slot: 0, course: 'shangfa' }, { slot: 1, course: 'minfa' }, { slot: 2, course: 'shangfa' }, { slot: 3, course: 'qinquan', room: '博学323 · Босюэ байр, 323' }],
+  2: [{ slot: 0, course: 'hanyu5', weeks: 'even', note: '2–16-р долоо хоног, тэгш' }, { slot: 1, course: 'minfa' }, { slot: 2, course: 'faxue' }, { slot: 3, course: 'faxue' }],
+  3: [{ slot: 1, course: 'qinquan', weeks: 'even', note: '2–16-р долоо хоног, тэгш' }, { slot: 1, course: 'hanyu5', weeks: 'odd', note: '1–17-р долоо хоног, сондгой' }, { slot: 3, course: 'tingli4' }],
+  4: [{ slot: 0, course: 'hanyu5' }, { slot: 1, course: 'kouyu5' }, { slot: 2, course: 'tingli4' }],
+  5: [{ slot: 0, course: 'hanyu5' }, { slot: 1, course: 'hsk' }, { slot: 2, course: 'kouyu5' }],
+};
+const DAY_NAMES = { 1: ['Да', 'Даваа'], 2: ['Мя', 'Мягмар'], 3: ['Лх', 'Лхагва'], 4: ['Пү', 'Пүрэв'], 5: ['Ба', 'Баасан'] };
+const dayTabs = document.querySelector('#dayTabs');
+const lessonList = document.querySelector('#lessonList');
+const dalianNow = () => {
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Shanghai', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  const get = (type) => parts.find((p) => p.type === type).value;
+  const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
+  return { weekday, minutes: Number(get('hour')) * 60 + Number(get('minute')), date: `${get('year')}-${get('month')}-${get('day')}` };
+};
+const weekNumber = (dateIso) => {
+  const diff = (Date.UTC(...dateIso.split('-').map((n, i) => (i === 1 ? Number(n) - 1 : Number(n)))) - Date.UTC(...SEMESTER_START.split('-').map((n, i) => (i === 1 ? Number(n) - 1 : Number(n))))) / 86400000;
+  return Math.floor(diff / 7) + 1;
+};
+const toMinutes = (hhmm) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3));
+let selectedDay = null;
+const renderSchedule = () => {
+  const now = dalianNow();
+  const today = now.weekday;
+  const week = weekNumber(now.date);
+  const inSemester = week >= 1 && week <= 17;
+  if (selectedDay === null) selectedDay = today >= 1 && today <= 5 ? today : 1;
+  dayTabs.textContent = '';
+  for (let d = 1; d <= 5; d++) {
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = `day-tab${d === selectedDay ? ' active' : ''}${d === today ? ' today' : ''}`;
+    tab.setAttribute('role', 'tab');
+    tab.innerHTML = `${DAY_NAMES[d][0]}<small>${d === today ? 'өнөөдөр' : DAY_NAMES[d][1].slice(0, 6)}</small>`;
+    tab.addEventListener('click', () => { selectedDay = d; renderSchedule(); });
+    dayTabs.appendChild(tab);
+  }
+  lessonList.textContent = '';
+  const note = document.createElement('p');
+  note.className = 'week-note';
+  note.textContent = inSemester ? `${week}-р долоо хоног (${week % 2 === 0 ? 'тэгш' : 'сондгой'}) · ${DAY_NAMES[selectedDay][1]} гараг` : `${DAY_NAMES[selectedDay][1]} гараг · семестрийн гадна`;
+  lessonList.appendChild(note);
+  const lessons = (SCHEDULE[selectedDay] || []).filter((l) => !inSemester || !l.weeks || (l.weeks === 'even') === (week % 2 === 0));
+  if (today === 0 || today === 6) {
+    const rest = document.createElement('div');
+    rest.className = 'lesson-empty';
+    rest.textContent = selectedDay === today ? '' : 'Өнөөдөр амралтын өдөр, сайхан амраарай ✦';
+    if (rest.textContent) lessonList.appendChild(rest);
+  }
+  if (!lessons.length) {
+    const empty = document.createElement('div');
+    empty.className = 'lesson-empty';
+    empty.textContent = 'Энэ өдөр хичээлгүй ✦';
+    lessonList.appendChild(empty);
+    return;
+  }
+  lessons.forEach((lesson, i) => {
+    const course = COURSES[lesson.course];
+    const [start, end] = SLOTS[lesson.slot];
+    const startMin = toMinutes(start), endMin = toMinutes(end);
+    let state = '';
+    let badge = '';
+    if (selectedDay === today) {
+      if (now.minutes >= startMin && now.minutes < endMin) { state = 'now'; badge = `одоо явагдаж байна · ${endMin - now.minutes} мин үлдлээ`; }
+      else if (now.minutes >= endMin) state = 'done';
+      else if (!lessons.slice(0, i).some((l) => toMinutes(SLOTS[l.slot][1]) > now.minutes)) { const wait = startMin - now.minutes; badge = wait < 60 ? `${wait} минутын дараа` : `${Math.floor(wait / 60)} цаг ${wait % 60} минутын дараа`; }
+    }
+    const card = document.createElement('article');
+    card.className = `lesson${state ? ' ' + state : ''}`;
+    card.style.setProperty('--i', i);
+    card.innerHTML = `${badge ? `<span class="lesson-badge">${badge}</span>` : ''}
+      <div class="lesson-time">${start}<small>${end}</small></div>
+      <div>
+        <p class="lesson-zh">${course.zh}</p>
+        <p class="lesson-mn">${course.mn}</p>
+        <p class="lesson-info">${course.teacher}<br />${lesson.room || DEFAULT_ROOM}${lesson.note ? `<br />${lesson.note}` : ''}</p>
+      </div>`;
+    lessonList.appendChild(card);
+  });
+};
+renderSchedule();
+setInterval(renderSchedule, 60000);
+
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
 const SPECIAL_DAYS = [
   { key: 'birthday', match: (m, d) => m === 6 && d === 30, badge: 'Төрсөн өдрийн мэнд ✦', title: 'Төрсөн өдрийн мэнд<br /><em>Ануужин минь!</em>', effect: 'confetti', cake: true },
@@ -707,7 +806,7 @@ secretStar.addEventListener('click', () => {
 });
 
 // Хуудас солих: хуруугаар эсвэл хулганаар гүйлгэх, ← → товчлуур
-const PAGES = [welcome, zodiac, farewell, weather, reply];
+const PAGES = [welcome, zodiac, farewell, schedule, weather, reply];
 const currentPage = () => PAGES.find((page) => !page.classList.contains('hidden'));
 const movePage = (direction) => {
   if (isFlipping || !lock.classList.contains('hidden')) return;
@@ -762,6 +861,17 @@ card.addEventListener('touchcancel', endSwipe);
 card.addEventListener('mousedown', (event) => { if (event.button === 0) startSwipe(event.clientX, event.clientY, event.target); });
 window.addEventListener('mousemove', (event) => moveSwipe(event.clientX, event.clientY));
 window.addEventListener('mouseup', endSwipe);
+// 1-р хуудасны цэс: нэрийг нь дарахад тэр хуудас руу шууд очно
+document.querySelectorAll('.menu-button').forEach((button) => {
+  button.addEventListener('click', () => {
+    const from = currentPage();
+    const to = document.querySelector(`#${button.dataset.page}`);
+    if (!from || !to || from === to || isFlipping) return;
+    goToPage(from, to);
+    if (to === weather) setTimeout(showWeatherPage, 340);
+  });
+});
+
 window.addEventListener('keydown', (event) => {
   if (event.target.closest('textarea, input')) return;
   if (event.key === 'ArrowRight') movePage(1);

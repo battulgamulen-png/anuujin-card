@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="style.css?v=26" />
   </head>
   <body data-theme="welcome">
     <div class="night-sky" id="nightSky" aria-hidden="true"><div class="moon"></div></div>
@@ -68,9 +68,16 @@
         <div class="special-badge hidden" id="specialBadge"></div>
         <h1 class="typewriter" id="welcomeTitle">Ануужин хүүхдэд<br />өглөө, өдөр, оройн<br /><em>мэээээнд!</em></h1>
         <div class="secret-note hidden" id="secretNote" aria-live="polite">P.S. Өнөөдөр заавал инээмсэглээрэй ✦</div>
-        <div class="page-dots" aria-label="1-р хуудас, нийт 5">
-          <span class="active"></span><span></span><span></span><span></span><span></span>
+        <div class="page-dots" aria-label="1-р хуудас, нийт 6">
+          <span class="active"></span><span></span><span></span><span></span><span></span><span></span>
         </div>
+        <nav class="page-menu" aria-label="Хуудас сонгох">
+          <button type="button" class="menu-button" data-page="zodiac">Зурхай ✦</button>
+          <button type="button" class="menu-button" data-page="farewell">Дуу ♫</button>
+          <button type="button" class="menu-button" data-page="schedule">Хуваарь ✎</button>
+          <button type="button" class="menu-button" data-page="weather">Цаг агаар ☀︎</button>
+          <button type="button" class="menu-button" data-page="reply">Бичвэр ✉</button>
+        </nav>
       </section>
 
       <section class="zodiac hidden" id="zodiac">
@@ -104,8 +111,8 @@
           </section>
         </div>
         <button type="button" class="share-button" id="shareButton">Story зураг хадгалах ✦</button>
-        <div class="page-dots" aria-label="2-р хуудас, нийт 5">
-          <span></span><span class="active"></span><span></span><span></span><span></span>
+        <div class="page-dots" aria-label="2-р хуудас, нийт 6">
+          <span></span><span class="active"></span><span></span><span></span><span></span><span></span>
         </div>
       </section>
 
@@ -135,8 +142,19 @@
         <p class="player-note">Тэмүүлэн гэдэг залууд хэлээд дуртай дуугаа энд оруулж болно шүү хаха ✦</p>
         <iframe class="youtube-player" id="youtubePlayer" title="Плейлист" src="https://www.youtube.com/embed/mS8LtfyQlno?enablejsapi=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" tabindex="-1" aria-hidden="true"></iframe>
         <p class="final-note hidden" id="finalNote" aria-live="polite">P.S. Инээмсэглэл чинь хамгийн сайхан нь шүү ✦</p>
-        <div class="page-dots" aria-label="3-р хуудас, нийт 5">
-          <span></span><span></span><span class="active"></span><span></span><span></span>
+        <div class="page-dots" aria-label="3-р хуудас, нийт 6">
+          <span></span><span></span><span class="active"></span><span></span><span></span><span></span>
+        </div>
+      </section>
+
+      <section class="schedule hidden" id="schedule">
+        <div class="schedule-icon" aria-hidden="true">✎</div>
+        <h2><em>Хичээлийн</em><br />хуваарь</h2>
+        <p class="schedule-meta" id="scheduleMeta">24 оны хууль зүйн анги · Гуанъя байр 204</p>
+        <div class="day-tabs" id="dayTabs" role="tablist" aria-label="Гараг"></div>
+        <div class="lesson-list" id="lessonList"></div>
+        <div class="page-dots" aria-label="4-р хуудас, нийт 6">
+          <span></span><span></span><span></span><span class="active"></span><span></span><span></span>
         </div>
       </section>
 
@@ -157,8 +175,8 @@
         <p class="weather-outfit" id="weatherOutfit"></p>
         <div class="weather-hours" id="weatherHours" aria-label="Ойрын цагууд"></div>
         <div class="weather-days" id="weatherDays" aria-label="Ойрын өдрүүд"></div>
-        <div class="page-dots" aria-label="4-р хуудас, нийт 5">
-          <span></span><span></span><span></span><span class="active"></span><span></span>
+        <div class="page-dots" aria-label="5-р хуудас, нийт 6">
+          <span></span><span></span><span></span><span></span><span class="active"></span><span></span>
         </div>
       </section>
       <section class="reply hidden" id="reply">
@@ -175,11 +193,11 @@
           <p>Тэмүүлэн удахгүй уншина. Дахиад бичмээр бол доороос.</p>
           <button type="button" class="back again" id="replyAgainButton">Дахин бичих</button>
         </div>
-        <div class="page-dots" aria-label="5-р хуудас, нийт 5">
-          <span></span><span></span><span></span><span></span><span class="active"></span>
+        <div class="page-dots" aria-label="6-р хуудас, нийт 6">
+          <span></span><span></span><span></span><span></span><span></span><span class="active"></span>
         </div>
       </section>
     </main>
-    <script src="script.js?v=35"></script>
+    <script src="script.js?v=41"></script>
   </body>
 </html>

@@ -3,6 +3,7 @@
 body[data-theme="zodiac"] { --rose: #9b7bd8; --gold: #d9b45a; --tint: #f3eefc; --bg: #ebe4f7; --glow1: #fff3c4; --glow2: #cdbdf0; --card: #fdfcff; }
 body[data-theme="farewell"] { --rose: #c25b9c; --gold: #e9aa78; --tint: #f9e9f3; --bg: #f3e0ec; --glow1: #fff1c9; --glow2: #e6b3d4; --card: #fffbfd; }
 body[data-theme="reply"] { --rose: #4fae8a; --gold: #e0b35a; --tint: #e9f6ef; --bg: #e1f1e8; --glow1: #fff6c8; --glow2: #bfe6d1; --card: #fbfefc; }
+body[data-theme="schedule"] { --rose: #e0963f; --gold: #d9b45a; --tint: #fdf1e3; --bg: #f9ead8; --glow1: #fff3c4; --glow2: #f5cfa3; --card: #fffdf9; }
 body[data-theme="weather"] { --rose: #4f9bd9; --gold: var(--gold); --tint: #eaf3fb; --bg: #e2eefa; --glow1: #fff8c9; --glow2: #b9d8f3; --card: #fbfdff; }
 * { box-sizing: border-box; }
 html { overflow-x: hidden; }
@@ -32,10 +33,10 @@ h1 { font-size: clamp(42px, 8vw, 62px); } h1 em, h2 em { color: var(--rose); fon
 .continue { display: inline-grid; width: 58px; height: 44px; margin-top: 30px; padding: 0; place-items: center; border-radius: 16px; font-size: 28px; line-height: 1; }
 .page-actions { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 28px; }
 .page-actions .continue { margin-top: 0; }
-.zodiac, .farewell, .weather, .reply { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
+.zodiac, .farewell, .weather, .reply, .schedule { position: relative; animation: pageIn .5s cubic-bezier(.2,.75,.3,1) both; }
 /* Шөнийн горим (18:00–06:00, хөтчийн цагаар) */
 body.night { --ink: #e9e7f7; --card: #1c2142; --tint: #272c55; --bg: #11152f; --glow1: #2a2f66; --glow2: #46305f; --gold: #f0c66a; }
-body.night[data-theme="welcome"] { --rose: #f28ca3; } body.night[data-theme="zodiac"] { --rose: #b59cf2; } body.night[data-theme="farewell"] { --rose: #e28fcb; } body.night[data-theme="weather"] { --rose: #7cb8ee; } body.night[data-theme="reply"] { --rose: #6fcfa6; }
+body.night[data-theme="welcome"] { --rose: #f28ca3; } body.night[data-theme="zodiac"] { --rose: #b59cf2; } body.night[data-theme="farewell"] { --rose: #e28fcb; } body.night[data-theme="weather"] { --rose: #7cb8ee; } body.night[data-theme="schedule"] { --rose: #f0b765; } body.night[data-theme="reply"] { --rose: #6fcfa6; }
 body.night-switching, body.night-switching .card, body.night-switching .horoscope-card, body.night-switching .music-player, body.night-switching .reply-form textarea, body.night-switching .back, body.night-switching .star-ratings div, body.night-switching .night-sky { transition-duration: 2.5s; transition-property: background-color, color, border-color, box-shadow, opacity, background; }
 body.night::before, body.night::after { border-color: #ffffff1a; }
 body.night .card { border-color: #2a3060; box-shadow: 0 24px 70px #00000066; }
@@ -242,6 +243,32 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .progress span { transition: width .4s linear; }
 .player-note { max-width: 380px; margin: 16px auto 0; color: #b07f8e; font-family: Caveat, cursive; font-size: 21px; line-height: 1.15; }
 .signature { margin: 18px 0 0; color:#c793a1; font-family:Caveat,cursive; font-size:19px; }
+/* Хичээлийн хуваарь */
+.schedule-icon { color: var(--gold); font-size: 40px; line-height: 1; }
+.schedule h2 { margin-top: 6px; font-size: clamp(40px, 6.6vw, 52px); }
+.schedule-meta { margin: 10px 0 16px; color: #bd788c; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+.day-tabs { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+.day-tab { min-width: 46px; padding: 8px 10px; border-radius: 14px; background: var(--tint); color: #9d7580; font-size: 12px; font-weight: 700; }
+.day-tab small { display: block; margin-top: 2px; font-size: 10px; font-weight: 600; opacity: .7; }
+.day-tab.active { background: var(--rose); color: #fff; }
+.day-tab.today:not(.active) { box-shadow: inset 0 0 0 2px var(--rose); }
+.week-note { margin: 0 0 12px; color: #9d7580; font-size: 12px; }
+.lesson-list { display: grid; gap: 10px; max-width: 440px; margin: 0 auto; text-align: left; }
+.lesson { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 14px 16px; border: 1px solid #f4dce3; border-radius: 16px; background: #fff9f7; animation: riseIn .5s cubic-bezier(.2,.75,.3,1) both; animation-delay: calc(var(--i) * .08s); }
+.lesson.now { border-color: var(--rose); box-shadow: 0 0 0 3px #e0963f22; }
+.lesson.done { opacity: .55; }
+.lesson-time { color: #593f4a; font-size: 13px; font-weight: 700; line-height: 1.3; }
+.lesson-time small { display: block; color: #a88a93; font-size: 11px; font-weight: 600; }
+.lesson-zh { margin: 0; color: #593f4a; font-size: 16px; font-weight: 700; }
+.lesson-mn { margin: 3px 0 6px; color: #765c66; font-size: 13px; line-height: 1.4; }
+.lesson-info { margin: 0; color: #a88a93; font-size: 11.5px; line-height: 1.5; }
+.lesson-badge { position: absolute; top: -9px; right: 14px; padding: 3px 9px; border-radius: 999px; background: var(--rose); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .5px; }
+.lesson-empty { padding: 26px 16px; border-radius: 16px; background: var(--tint); color: #9d7580; font-family: Caveat, cursive; font-size: 24px; text-align: center; }
+body.night .lesson { border-color: #2f3666; background: #222850; }
+body.night .lesson-time, body.night .lesson-zh { color: #eceaf8; }
+body.night .lesson-mn { color: #cfd0e6; } body.night .lesson-info, body.night .lesson-time small, body.night .week-note { color: #b4b6d6; }
+body.night .day-tab { color: #d8d4f0; } body.night .day-tab.active { color: #fff; }
+@media (max-width: 600px) { .lesson { grid-template-columns: 56px 1fr; gap: 10px; padding: 12px 13px; } .lesson-zh { font-size: 15px; } .day-tab { min-width: 0; flex: 1; padding: 7px 4px; } }
 /* 4-р хуудас: цаг агаар */
 .weather-icon { color: var(--gold); font-size: 52px; line-height: 1; font-variant-emoji: text; }
 .weather h2 { margin-top: 6px; font-size: clamp(40px, 6.6vw, 52px); }
@@ -312,7 +339,11 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 @keyframes hintPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 .card.dragging { user-select: none; }
 body.night .page-dots { margin-top: 24px; }
-.farewell .page-dots, .weather .page-dots, .reply .page-dots, .zodiac .page-dots { margin-top: 26px; }
+.farewell .page-dots, .weather .page-dots, .reply .page-dots, .zodiac .page-dots, .schedule .page-dots { margin-top: 26px; }
+.page-menu { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 400px; margin: 20px auto 0; }
+.menu-button { padding: 9px 15px; border-radius: 999px; background: var(--tint); color: var(--rose); font-size: 12.5px; font-weight: 700; font-variant-emoji: text; }
+.menu-button:hover { background: var(--rose); color: #fff; }
+body.night .menu-button { color: #e9d9f5; } body.night .menu-button:hover { color: #fff; }
 .page-dots { display: flex; justify-content: center; gap: 7px; margin-top: 24px; }.page-dots span { width: 6px; height: 6px; border-radius: 50%; background: #efc6d0; transition: width .25s, background .25s; }.page-dots .active { width: 20px; border-radius: 99px; background: var(--rose); }
 @keyframes charIn { from { opacity:0; transform:translateY(8px) rotate(-4deg); } to { opacity:1; transform:none; } }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
