@@ -253,16 +253,39 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .day-tab.active { background: var(--rose); color: #fff; }
 .day-tab.today:not(.active) { box-shadow: inset 0 0 0 2px var(--rose); }
 .week-note { margin: 0 0 12px; color: #9d7580; font-size: 12px; }
-.lesson-list { display: grid; gap: 10px; max-width: 440px; margin: 0 auto; text-align: left; }
-.lesson { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 14px 16px; border: 1px solid #f4dce3; border-radius: 16px; background: #fff9f7; animation: riseIn .5s cubic-bezier(.2,.75,.3,1) both; animation-delay: calc(var(--i) * .08s); }
-.lesson.now { border-color: var(--rose); box-shadow: 0 0 0 3px #e0963f22; }
+/* Одоо / дараагийн хичээлийн статус */
+.lesson-hero { max-width: 440px; margin: 0 auto 16px; padding: 16px 18px; border-radius: 18px; background: linear-gradient(135deg, var(--rose), #f3b26b); color: #fff; text-align: left; box-shadow: 0 12px 28px #e0963f40; animation: riseIn .5s cubic-bezier(.2,.75,.3,1) both; }
+.lesson-hero.calm { background: linear-gradient(135deg, var(--tint), #fff); color: #765c66; box-shadow: none; border: 1px solid #f4dce3; }
+.lesson-hero .hero-label { display: block; margin-bottom: 4px; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; opacity: .85; }
+.lesson-hero .hero-title { margin: 0; font-size: 20px; font-weight: 700; line-height: 1.2; }
+.lesson-hero .hero-sub { margin: 4px 0 0; font-size: 12.5px; opacity: .9; }
+.lesson-hero .hero-bar { height: 6px; margin-top: 12px; border-radius: 99px; background: #ffffff55; overflow: hidden; }
+.lesson-hero .hero-bar span { display: block; height: 100%; width: var(--p, 0%); border-radius: inherit; background: #fff; transition: width 1s ease; }
+.lesson-hero.calm .hero-title { font-family: Caveat, cursive; font-size: 28px; color: var(--rose); }
+/* Хичээлийн картууд: цагийн шугам */
+.lesson-list { position: relative; display: grid; gap: 10px; max-width: 440px; margin: 0 auto; text-align: left; }
+.lesson-list::before { content: ""; position: absolute; left: 31px; top: 48px; bottom: 24px; width: 2px; background: repeating-linear-gradient(#efc6d0 0 6px, transparent 6px 12px); }
+@media (max-width: 600px) { .lesson-list::before { left: 27px; } }
+.lesson { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 14px 16px 14px 14px; border: 1px solid #f4dce3; border-left: 5px solid var(--course, #e9aa78); border-radius: 16px; background: #fff9f7; animation: riseIn .5s cubic-bezier(.2,.75,.3,1) both; animation-delay: calc(var(--i) * .08s); }
+.lesson.now { border-color: var(--course, var(--rose)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--course, var(--rose)) 25%, transparent); animation: riseIn .5s cubic-bezier(.2,.75,.3,1) both, lessonPulse 2.4s ease-in-out 1s infinite; }
+@keyframes lessonPulse { 0%, 100% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--course, var(--rose)) 25%, transparent); } 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--course, var(--rose)) 12%, transparent); } }
+.lesson-icon { position: absolute; left: -16px; top: 14px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--course, #e9aa78); color: #fff; font-size: 13px; font-weight: 700; box-shadow: 0 0 0 3px #fff9f7; font-variant-emoji: text; }
+.lesson-time { padding-left: 16px; }
+.lesson-progress { height: 4px; margin: 8px 0 2px; border-radius: 99px; background: #ead5d9; overflow: hidden; }
+.lesson-progress span { display: block; height: 100%; width: var(--p, 0%); background: var(--course, var(--rose)); border-radius: inherit; }
+.day-summary { margin: 0 0 12px; color: #9d7580; font-size: 12px; }
+body.night .lesson-list::before { background: repeating-linear-gradient(#3f4677 0 6px, transparent 6px 12px); }
+body.night .lesson-icon { box-shadow: 0 0 0 3px #222850; }
+body.night .lesson-progress { background: #343b6a; }
+body.night .day-summary { color: #b4b6d6; }
+body.night .lesson-hero.calm { background: #222850; border-color: #2f3666; color: #cfd0e6; }
 .lesson.done { opacity: .55; }
 .lesson-time { color: #593f4a; font-size: 13px; font-weight: 700; line-height: 1.3; }
 .lesson-time small { display: block; color: #a88a93; font-size: 11px; font-weight: 600; }
 .lesson-zh { margin: 0; color: #593f4a; font-size: 16px; font-weight: 700; }
 .lesson-mn { margin: 3px 0 6px; color: #765c66; font-size: 13px; line-height: 1.4; }
 .lesson-info { margin: 0; color: #a88a93; font-size: 11.5px; line-height: 1.5; }
-.lesson-badge { position: absolute; top: -9px; right: 14px; padding: 3px 9px; border-radius: 999px; background: var(--rose); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .5px; }
+.lesson-badge { position: absolute; top: -9px; right: 14px; padding: 3px 9px; border-radius: 999px; background: var(--course, var(--rose)); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .5px; }
 .lesson-empty { padding: 26px 16px; border-radius: 16px; background: var(--tint); color: #9d7580; font-family: Caveat, cursive; font-size: 24px; text-align: center; }
 body.night .lesson { border-color: #2f3666; background: #222850; }
 body.night .lesson-time, body.night .lesson-zh { color: #eceaf8; }

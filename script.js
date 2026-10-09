@@ -574,14 +574,14 @@ const enableNotifications = async () => {
 const SEMESTER_START = '2026-09-07';
 const SLOTS = [['08:10', '09:45'], ['10:00', '11:35'], ['13:15', '14:50'], ['15:05', '16:40']];
 const COURSES = {
-  shangfa: { zh: '商法总论', mn: 'Худалдааны эрх зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш' },
-  minfa: { zh: '民法总论', mn: 'Иргэний эрх зүйн ерөнхий онол', teacher: '郭佳玮 · Го Цзявэй багш' },
-  qinquan: { zh: '侵权法', mn: 'Гэм хорын эрх зүй', teacher: '王爱群 · Ван Айцюнь багш' },
-  faxue: { zh: '法学通论', mn: 'Хууль зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш' },
-  hanyu5: { zh: '汉语综合5', mn: 'Хятад хэлний нэгдсэн хичээл 5', teacher: '张亚男 · Жан Янань багш' },
-  kouyu5: { zh: '汉语口语5', mn: 'Хятад хэлний ярианы хичээл 5', teacher: '张珍华 · Жан Жэньхуа багш' },
-  tingli4: { zh: '汉语听力4', mn: 'Хятад хэлний сонсголын хичээл 4', teacher: '刘文飞 · Лю Вэньфэй багш' },
-  hsk: { zh: 'HSK辅导', mn: 'HSK шалгалтын бэлтгэл', teacher: '程嘉慧 · Чэн Цзяхуэй багш' },
+  shangfa: { zh: '商法总论', mn: 'Худалдааны эрх зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш', color: '#d98ba3', icon: '§' },
+  minfa: { zh: '民法总论', mn: 'Иргэний эрх зүйн ерөнхий онол', teacher: '郭佳玮 · Го Цзявэй багш', color: '#b59cf2', icon: '§' },
+  qinquan: { zh: '侵权法', mn: 'Гэм хорын эрх зүй', teacher: '王爱群 · Ван Айцюнь багш', color: '#e0963f', icon: '§' },
+  faxue: { zh: '法学通论', mn: 'Хууль зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш', color: '#c25b9c', icon: '§' },
+  hanyu5: { zh: '汉语综合5', mn: 'Хятад хэлний нэгдсэн хичээл 5', teacher: '张亚男 · Жан Янань багш', color: '#4fae8a', icon: '文' },
+  kouyu5: { zh: '汉语口语5', mn: 'Хятад хэлний ярианы хичээл 5', teacher: '张珍华 · Жан Жэньхуа багш', color: '#4f9bd9', icon: '口' },
+  tingli4: { zh: '汉语听力4', mn: 'Хятад хэлний сонсголын хичээл 4', teacher: '刘文飞 · Лю Вэньфэй багш', color: '#7cb8ee', icon: '♪' },
+  hsk: { zh: 'HSK辅导', mn: 'HSK шалгалтын бэлтгэл', teacher: '程嘉慧 · Чэн Цзяхуэй багш', color: '#e86c88', icon: 'H' },
 };
 const DEFAULT_ROOM = '广雅楼204 · Гуанъя байр, 204';
 const SCHEDULE = {
@@ -594,6 +594,7 @@ const SCHEDULE = {
 const DAY_NAMES = { 1: ['Да', 'Даваа'], 2: ['Мя', 'Мягмар'], 3: ['Лх', 'Лхагва'], 4: ['Пү', 'Пүрэв'], 5: ['Ба', 'Баасан'] };
 const dayTabs = document.querySelector('#dayTabs');
 const lessonList = document.querySelector('#lessonList');
+const lessonHero = document.querySelector('#lessonHero');
 const dalianNow = () => {
   const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Shanghai', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
   const get = (type) => parts.find((p) => p.type === type).value;
@@ -606,12 +607,39 @@ const weekNumber = (dateIso) => {
 };
 const toMinutes = (hhmm) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3));
 let selectedDay = null;
+const minutesText = (m) => (m < 60 ? `${m} минут` : `${Math.floor(m / 60)} цаг ${m % 60} минут`);
+const lessonsFor = (day, week, inSemester) => (SCHEDULE[day] || []).filter((l) => !inSemester || !l.weeks || (l.weeks === 'even') === (week % 2 === 0));
+const renderHero = (now, week, inSemester) => {
+  const today = now.weekday;
+  const todays = today >= 1 && today <= 5 ? lessonsFor(today, week, inSemester) : [];
+  let html = '';
+  let calm = false;
+  const current = todays.find((l) => now.minutes >= toMinutes(SLOTS[l.slot][0]) && now.minutes < toMinutes(SLOTS[l.slot][1]));
+  const next = todays.find((l) => toMinutes(SLOTS[l.slot][0]) > now.minutes);
+  if (current) {
+    const [a, b] = SLOTS[current.slot].map(toMinutes);
+    const c = COURSES[current.course];
+    html = `<span class="hero-label">Одоо явагдаж байна</span><p class="hero-title">${c.zh} · ${c.mn}</p><p class="hero-sub">${minutesText(b - now.minutes)}ын дараа дуусна · ${current.room || DEFAULT_ROOM}</p><div class="hero-bar"><span style="--p:${Math.round(((now.minutes - a) / (b - a)) * 100)}%"></span></div>`;
+  } else if (next) {
+    const c = COURSES[next.course];
+    html = `<span class="hero-label">Дараагийн хичээл</span><p class="hero-title">${c.zh} · ${c.mn}</p><p class="hero-sub">${SLOTS[next.slot][0]}-д эхэлнэ · ${minutesText(toMinutes(SLOTS[next.slot][0]) - now.minutes)}-ын дараа</p>`;
+  } else if (todays.length) {
+    calm = true;
+    html = `<span class="hero-label">Өнөөдрийн хичээл</span><p class="hero-title">Бүгд дууслаа, сайхан амраарай ✦</p><p class="hero-sub">Өнөөдөр ${todays.length} хичээл орсон</p>`;
+  } else {
+    calm = true;
+    html = `<span class="hero-label">${today === 0 || today === 6 ? 'Амралтын өдөр' : 'Өнөөдөр'}</span><p class="hero-title">Хичээлгүй өдөр, өөртөө цаг гаргаарай ✦</p>`;
+  }
+  lessonHero.className = `lesson-hero${calm ? ' calm' : ''}`;
+  lessonHero.innerHTML = html;
+};
 const renderSchedule = () => {
   const now = dalianNow();
   const today = now.weekday;
   const week = weekNumber(now.date);
   const inSemester = week >= 1 && week <= 17;
   if (selectedDay === null) selectedDay = today >= 1 && today <= 5 ? today : 1;
+  renderHero(now, week, inSemester);
   dayTabs.textContent = '';
   for (let d = 1; d <= 5; d++) {
     const tab = document.createElement('button');
@@ -623,17 +651,12 @@ const renderSchedule = () => {
     dayTabs.appendChild(tab);
   }
   lessonList.textContent = '';
-  const note = document.createElement('p');
-  note.className = 'week-note';
-  note.textContent = inSemester ? `${week}-р долоо хоног (${week % 2 === 0 ? 'тэгш' : 'сондгой'}) · ${DAY_NAMES[selectedDay][1]} гараг` : `${DAY_NAMES[selectedDay][1]} гараг · семестрийн гадна`;
-  lessonList.appendChild(note);
-  const lessons = (SCHEDULE[selectedDay] || []).filter((l) => !inSemester || !l.weeks || (l.weeks === 'even') === (week % 2 === 0));
-  if (today === 0 || today === 6) {
-    const rest = document.createElement('div');
-    rest.className = 'lesson-empty';
-    rest.textContent = selectedDay === today ? '' : 'Өнөөдөр амралтын өдөр, сайхан амраарай ✦';
-    if (rest.textContent) lessonList.appendChild(rest);
-  }
+  const lessons = lessonsFor(selectedDay, week, inSemester);
+  const summary = document.createElement('p');
+  summary.className = 'day-summary';
+  const span = lessons.length ? `${SLOTS[lessons[0].slot][0]}–${SLOTS[lessons[lessons.length - 1].slot][1]}` : '';
+  summary.textContent = `${DAY_NAMES[selectedDay][1]} · ${inSemester ? `${week}-р долоо хоног (${week % 2 === 0 ? 'тэгш' : 'сондгой'})` : 'семестрийн гадна'}${lessons.length ? ` · ${lessons.length} хичээл · ${span}` : ''}`;
+  lessonList.appendChild(summary);
   if (!lessons.length) {
     const empty = document.createElement('div');
     empty.className = 'lesson-empty';
@@ -647,20 +670,23 @@ const renderSchedule = () => {
     const startMin = toMinutes(start), endMin = toMinutes(end);
     let state = '';
     let badge = '';
+    let progress = null;
     if (selectedDay === today) {
-      if (now.minutes >= startMin && now.minutes < endMin) { state = 'now'; badge = `одоо явагдаж байна · ${endMin - now.minutes} мин үлдлээ`; }
+      if (now.minutes >= startMin && now.minutes < endMin) { state = 'now'; badge = `одоо · ${endMin - now.minutes} мин үлдлээ`; progress = Math.round(((now.minutes - startMin) / (endMin - startMin)) * 100); }
       else if (now.minutes >= endMin) state = 'done';
-      else if (!lessons.slice(0, i).some((l) => toMinutes(SLOTS[l.slot][1]) > now.minutes)) { const wait = startMin - now.minutes; badge = wait < 60 ? `${wait} минутын дараа` : `${Math.floor(wait / 60)} цаг ${wait % 60} минутын дараа`; }
+      else if (!lessons.slice(0, i).some((l) => toMinutes(SLOTS[l.slot][1]) > now.minutes)) badge = `${minutesText(startMin - now.minutes)}ын дараа`;
     }
     const card = document.createElement('article');
     card.className = `lesson${state ? ' ' + state : ''}`;
     card.style.setProperty('--i', i);
-    card.innerHTML = `${badge ? `<span class="lesson-badge">${badge}</span>` : ''}
+    card.style.setProperty('--course', course.color);
+    card.innerHTML = `<span class="lesson-icon">${course.icon}</span>${badge ? `<span class="lesson-badge">${badge}</span>` : ''}
       <div class="lesson-time">${start}<small>${end}</small></div>
       <div>
         <p class="lesson-zh">${course.zh}</p>
         <p class="lesson-mn">${course.mn}</p>
         <p class="lesson-info">${course.teacher}<br />${lesson.room || DEFAULT_ROOM}${lesson.note ? `<br />${lesson.note}` : ''}</p>
+        ${progress !== null ? `<div class="lesson-progress"><span style="--p:${progress}%"></span></div>` : ''}
       </div>`;
     lessonList.appendChild(card);
   });
