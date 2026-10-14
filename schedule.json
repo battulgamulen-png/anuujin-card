@@ -1,0 +1,24 @@
+{
+  "semesterStart": "2026-09-07",
+  "semesterWeeks": 17,
+  "className": "24 оны хууль зүйн анги · Гуанъя байр 204",
+  "defaultRoom": "广雅楼204 · Гуанъя байр, 204",
+  "slots": [["08:10", "09:45"], ["10:00", "11:35"], ["13:15", "14:50"], ["15:05", "16:40"]],
+  "courses": {
+    "shangfa": { "zh": "商法总论", "mn": "Худалдааны эрх зүйн ерөнхий онол", "teacher": "尚蕾 · Шан Лэй багш", "color": "#d98ba3", "icon": "§" },
+    "minfa": { "zh": "民法总论", "mn": "Иргэний эрх зүйн ерөнхий онол", "teacher": "郭佳玮 · Го Цзявэй багш", "color": "#b59cf2", "icon": "§" },
+    "qinquan": { "zh": "侵权法", "mn": "Гэм хорын эрх зүй", "teacher": "王爱群 · Ван Айцюнь багш", "color": "#e0963f", "icon": "§" },
+    "faxue": { "zh": "法学通论", "mn": "Хууль зүйн ерөнхий онол", "teacher": "尚蕾 · Шан Лэй багш", "color": "#c25b9c", "icon": "§" },
+    "hanyu5": { "zh": "汉语综合5", "mn": "Хятад хэлний нэгдсэн хичээл 5", "teacher": "张亚男 · Жан Янань багш", "color": "#4fae8a", "icon": "文" },
+    "kouyu5": { "zh": "汉语口语5", "mn": "Хятад хэлний ярианы хичээл 5", "teacher": "张珍华 · Жан Жэньхуа багш", "color": "#4f9bd9", "icon": "口" },
+    "tingli4": { "zh": "汉语听力4", "mn": "Хятад хэлний сонсголын хичээл 4", "teacher": "刘文飞 · Лю Вэньфэй багш", "color": "#7cb8ee", "icon": "♪" },
+    "hsk": { "zh": "HSK辅导", "mn": "HSK шалгалтын бэлтгэл", "teacher": "程嘉慧 · Чэн Цзяхуэй багш", "color": "#e86c88", "icon": "H" }
+  },
+  "schedule": {
+    "1": [{ "slot": 0, "course": "shangfa" }, { "slot": 1, "course": "minfa" }, { "slot": 2, "course": "shangfa" }, { "slot": 3, "course": "qinquan", "room": "博学323 · Босюэ байр, 323" }],
+    "2": [{ "slot": 0, "course": "hanyu5", "weeks": "even", "note": "2–16-р долоо хоног, тэгш" }, { "slot": 1, "course": "minfa" }, { "slot": 2, "course": "faxue" }, { "slot": 3, "course": "faxue" }],
+    "3": [{ "slot": 1, "course": "qinquan", "weeks": "even", "note": "2–16-р долоо хоног, тэгш" }, { "slot": 1, "course": "hanyu5", "weeks": "odd", "note": "1–17-р долоо хоног, сондгой" }, { "slot": 3, "course": "tingli4" }],
+    "4": [{ "slot": 0, "course": "hanyu5" }, { "slot": 1, "course": "kouyu5" }, { "slot": 2, "course": "tingli4" }],
+    "5": [{ "slot": 0, "course": "hanyu5" }, { "slot": 1, "course": "hsk" }, { "slot": 2, "course": "kouyu5" }]
+  }
+}

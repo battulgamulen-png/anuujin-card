@@ -253,6 +253,18 @@ button:hover { transform: translateY(-2px); }.yes { color:white; background:var(
 .day-tab.active { background: var(--rose); color: #fff; }
 .day-tab.today:not(.active) { box-shadow: inset 0 0 0 2px var(--rose); }
 .week-note { margin: 0 0 12px; color: #9d7580; font-size: 12px; }
+/* Семестрийн явц */
+.semester { max-width: 440px; margin: -6px auto 14px; }
+.semester .sem-text { display: flex; justify-content: space-between; margin-bottom: 5px; color: #9d7580; font-size: 11px; font-weight: 600; }
+.semester .sem-bar { height: 5px; border-radius: 99px; background: #f1dde4; overflow: hidden; }
+.semester .sem-bar span { display: block; height: 100%; width: var(--p, 0%); border-radius: inherit; background: linear-gradient(90deg, var(--rose), #f3b26b); transition: width 1s ease; }
+body.night .semester .sem-text { color: #b4b6d6; } body.night .semester .sem-bar { background: #343b6a; }
+/* Сарны үе шат */
+.moon-phase { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 12px 0 0; color: #9d7580; font-size: 12.5px; animation: riseIn .55s cubic-bezier(.2,.75,.3,1) both; animation-delay: .25s; }
+.moon-phase .moon-disc { position: relative; width: 26px; height: 26px; border-radius: 50%; background: #f4e7c3; box-shadow: 0 0 10px #f4e7c3aa; overflow: hidden; flex: 0 0 26px; }
+.moon-phase .moon-disc::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: #d9c6e6; transform: translateX(var(--shadow, 0)); }
+.moon-phase strong { color: #593f4a; }
+body.night .moon-phase { color: #b4b6d6; } body.night .moon-phase strong { color: #eceaf8; } body.night .moon-phase .moon-disc::after { background: #1c2142; }
 /* Одоо / дараагийн хичээлийн статус */
 .lesson-hero { max-width: 440px; margin: 0 auto 16px; padding: 16px 18px; border-radius: 18px; background: linear-gradient(135deg, var(--rose), #f3b26b); color: #fff; text-align: left; box-shadow: 0 12px 28px #e0963f40; animation: riseIn .5s cubic-bezier(.2,.75,.3,1) both; }
 .lesson-hero.calm { background: linear-gradient(135deg, var(--tint), #fff); color: #765c66; box-shadow: none; border: 1px solid #f4dce3; }

@@ -42,6 +42,20 @@ let progressTimer = null;
 const horoscopeTitle = document.querySelector('#horoscopeTitle');
 const horoscopeText = document.querySelector('#horoscopeText');
 const WEEKDAYS = ['Ням', 'Даваа', 'Мягмар', 'Лхагва', 'Пүрэв', 'Баасан', 'Бямба'];
+// Сарны үе шат: 2000-01-06 18:14 UTC шинэ сарнаас тооцно
+const renderMoon = () => {
+  const synodic = 29.530588853;
+  const days = (Date.now() - Date.UTC(2000, 0, 6, 18, 14)) / 86400000;
+  const phase = ((days % synodic) + synodic) % synodic / synodic; // 0 шинэ, .5 бүтэн
+  const illumination = Math.round((1 - Math.cos(phase * 2 * Math.PI)) / 2 * 100);
+  const names = ['шинэ сар', 'өсөж буй хавирган сар', 'эхний улирал', 'өсөж буй дүүрэн сар', 'бүтэн сар', 'хорогдож буй дүүрэн сар', 'сүүлийн улирал', 'хорогдож буй хавирган сар'];
+  const name = names[Math.round(phase * 8) % 8];
+  // Сүүдрийн дискийг зөөж гэрэлтэй хэсгийг харуулна (баруун талаас өсөж, зүүн талаас хорогдоно)
+  const shift = phase <= 0.5 ? -(phase * 2) * 26 : (1 - (phase - 0.5) * 2) * 26;
+  document.querySelector('#moonPhase').innerHTML = `<span class="moon-disc" style="--shadow:${shift.toFixed(1)}px"></span><span>Сар: <strong>${name}</strong> · ${illumination}%</span>`;
+};
+renderMoon();
+
 // Текстийг өгүүлбэр бүрээр зөөлөн гаргана
 const revealLines = (element, text) => {
   element.textContent = '';
@@ -232,6 +246,7 @@ const loadWeather = async () => {
     ].map((item) => `<span>${item}</span>`).join('');
     paintSky(now.sky, current.is_day === 1);
     mascot.classList.toggle('rainy', now.sky === 'rain');
+    lastWeatherSky = now.sky;
 
     const outfit = outfitFor(current.weather_code, current.temperature_2m, current.wind_speed_10m);
     document.querySelector('#weatherOutfit').textContent = `Өнөөдөр: ${outfit.join(', ').toLowerCase()}`;
@@ -571,26 +586,13 @@ const enableNotifications = async () => {
 };
 
 // Хичээлийн хуваарь (Далианы цагаар). SEMESTER_START = 1-р долоо хоногийн Даваа гараг
-const SEMESTER_START = '2026-09-07';
-const SLOTS = [['08:10', '09:45'], ['10:00', '11:35'], ['13:15', '14:50'], ['15:05', '16:40']];
-const COURSES = {
-  shangfa: { zh: '商法总论', mn: 'Худалдааны эрх зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш', color: '#d98ba3', icon: '§' },
-  minfa: { zh: '民法总论', mn: 'Иргэний эрх зүйн ерөнхий онол', teacher: '郭佳玮 · Го Цзявэй багш', color: '#b59cf2', icon: '§' },
-  qinquan: { zh: '侵权法', mn: 'Гэм хорын эрх зүй', teacher: '王爱群 · Ван Айцюнь багш', color: '#e0963f', icon: '§' },
-  faxue: { zh: '法学通论', mn: 'Хууль зүйн ерөнхий онол', teacher: '尚蕾 · Шан Лэй багш', color: '#c25b9c', icon: '§' },
-  hanyu5: { zh: '汉语综合5', mn: 'Хятад хэлний нэгдсэн хичээл 5', teacher: '张亚男 · Жан Янань багш', color: '#4fae8a', icon: '文' },
-  kouyu5: { zh: '汉语口语5', mn: 'Хятад хэлний ярианы хичээл 5', teacher: '张珍华 · Жан Жэньхуа багш', color: '#4f9bd9', icon: '口' },
-  tingli4: { zh: '汉语听力4', mn: 'Хятад хэлний сонсголын хичээл 4', teacher: '刘文飞 · Лю Вэньфэй багш', color: '#7cb8ee', icon: '♪' },
-  hsk: { zh: 'HSK辅导', mn: 'HSK шалгалтын бэлтгэл', teacher: '程嘉慧 · Чэн Цзяхуэй багш', color: '#e86c88', icon: 'H' },
-};
-const DEFAULT_ROOM = '广雅楼204 · Гуанъя байр, 204';
-const SCHEDULE = {
-  1: [{ slot: 0, course: 'shangfa' }, { slot: 1, course: 'minfa' }, { slot: 2, course: 'shangfa' }, { slot: 3, course: 'qinquan', room: '博学323 · Босюэ байр, 323' }],
-  2: [{ slot: 0, course: 'hanyu5', weeks: 'even', note: '2–16-р долоо хоног, тэгш' }, { slot: 1, course: 'minfa' }, { slot: 2, course: 'faxue' }, { slot: 3, course: 'faxue' }],
-  3: [{ slot: 1, course: 'qinquan', weeks: 'even', note: '2–16-р долоо хоног, тэгш' }, { slot: 1, course: 'hanyu5', weeks: 'odd', note: '1–17-р долоо хоног, сондгой' }, { slot: 3, course: 'tingli4' }],
-  4: [{ slot: 0, course: 'hanyu5' }, { slot: 1, course: 'kouyu5' }, { slot: 2, course: 'tingli4' }],
-  5: [{ slot: 0, course: 'hanyu5' }, { slot: 1, course: 'hsk' }, { slot: 2, course: 'kouyu5' }],
-};
+let SEMESTER_START = '2026-09-07';
+let SEMESTER_WEEKS = 17;
+let SLOTS = [];
+let COURSES = {};
+let DEFAULT_ROOM = '';
+let SCHEDULE = {};
+let scheduleLoaded = false;
 const DAY_NAMES = { 1: ['Да', 'Даваа'], 2: ['Мя', 'Мягмар'], 3: ['Лх', 'Лхагва'], 4: ['Пү', 'Пүрэв'], 5: ['Ба', 'Баасан'] };
 const dayTabs = document.querySelector('#dayTabs');
 const lessonList = document.querySelector('#lessonList');
@@ -607,7 +609,7 @@ const weekNumber = (dateIso) => {
 };
 const toMinutes = (hhmm) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3));
 let selectedDay = null;
-const minutesText = (m) => (m < 60 ? `${m} минут` : `${Math.floor(m / 60)} цаг ${m % 60} минут`);
+const minutesText = (m) => (m < 60 ? `${m} минутын` : m % 60 === 0 ? `${Math.floor(m / 60)} цагийн` : `${Math.floor(m / 60)} цаг ${m % 60} минутын`);
 const lessonsFor = (day, week, inSemester) => (SCHEDULE[day] || []).filter((l) => !inSemester || !l.weeks || (l.weeks === 'even') === (week % 2 === 0));
 const renderHero = (now, week, inSemester) => {
   const today = now.weekday;
@@ -619,10 +621,10 @@ const renderHero = (now, week, inSemester) => {
   if (current) {
     const [a, b] = SLOTS[current.slot].map(toMinutes);
     const c = COURSES[current.course];
-    html = `<span class="hero-label">Одоо явагдаж байна</span><p class="hero-title">${c.zh} · ${c.mn}</p><p class="hero-sub">${minutesText(b - now.minutes)}ын дараа дуусна · ${current.room || DEFAULT_ROOM}</p><div class="hero-bar"><span style="--p:${Math.round(((now.minutes - a) / (b - a)) * 100)}%"></span></div>`;
+    html = `<span class="hero-label">Одоо явагдаж байна</span><p class="hero-title">${c.zh} · ${c.mn}</p><p class="hero-sub">${minutesText(b - now.minutes)} дараа дуусна · ${current.room || DEFAULT_ROOM}</p><div class="hero-bar"><span style="--p:${Math.round(((now.minutes - a) / (b - a)) * 100)}%"></span></div>`;
   } else if (next) {
     const c = COURSES[next.course];
-    html = `<span class="hero-label">Дараагийн хичээл</span><p class="hero-title">${c.zh} · ${c.mn}</p><p class="hero-sub">${SLOTS[next.slot][0]}-д эхэлнэ · ${minutesText(toMinutes(SLOTS[next.slot][0]) - now.minutes)}-ын дараа</p>`;
+    html = `<span class="hero-label">Дараагийн хичээл</span><p class="hero-title">${c.zh} · ${c.mn}</p><p class="hero-sub">${SLOTS[next.slot][0]}-д эхэлнэ · ${minutesText(toMinutes(SLOTS[next.slot][0]) - now.minutes)} дараа</p>`;
   } else if (todays.length) {
     calm = true;
     html = `<span class="hero-label">Өнөөдрийн хичээл</span><p class="hero-title">Бүгд дууслаа, сайхан амраарай ✦</p><p class="hero-sub">Өнөөдөр ${todays.length} хичээл орсон</p>`;
@@ -637,9 +639,13 @@ const renderSchedule = () => {
   const now = dalianNow();
   const today = now.weekday;
   const week = weekNumber(now.date);
-  const inSemester = week >= 1 && week <= 17;
+  const inSemester = week >= 1 && week <= SEMESTER_WEEKS;
   if (selectedDay === null) selectedDay = today >= 1 && today <= 5 ? today : 1;
   renderHero(now, week, inSemester);
+  const semester = document.querySelector('#semester');
+  if (week < 1) semester.innerHTML = `<div class="sem-text"><span>Семестр ${SEMESTER_START}-нд эхэлнэ</span><span>✦</span></div><div class="sem-bar"><span style="--p:0%"></span></div>`;
+  else if (week > SEMESTER_WEEKS) semester.innerHTML = `<div class="sem-text"><span>Семестр дууслаа, амралт ✦</span><span>100%</span></div><div class="sem-bar"><span style="--p:100%"></span></div>`;
+  else { const p = Math.round(((week - 1) / SEMESTER_WEEKS) * 100 + (now.weekday === 0 ? 100 : (now.weekday - 1) * 100 / 7) / SEMESTER_WEEKS); semester.innerHTML = `<div class="sem-text"><span>${week} / ${SEMESTER_WEEKS} долоо хоног</span><span>${p}% · ${SEMESTER_WEEKS - week} долоо хоног үлдлээ</span></div><div class="sem-bar"><span style="--p:${p}%"></span></div>`; }
   dayTabs.textContent = '';
   for (let d = 1; d <= 5; d++) {
     const tab = document.createElement('button');
@@ -674,7 +680,7 @@ const renderSchedule = () => {
     if (selectedDay === today) {
       if (now.minutes >= startMin && now.minutes < endMin) { state = 'now'; badge = `одоо · ${endMin - now.minutes} мин үлдлээ`; progress = Math.round(((now.minutes - startMin) / (endMin - startMin)) * 100); }
       else if (now.minutes >= endMin) state = 'done';
-      else if (!lessons.slice(0, i).some((l) => toMinutes(SLOTS[l.slot][1]) > now.minutes)) badge = `${minutesText(startMin - now.minutes)}ын дараа`;
+      else if (!lessons.slice(0, i).some((l) => toMinutes(SLOTS[l.slot][1]) > now.minutes)) badge = `${minutesText(startMin - now.minutes)} дараа`;
     }
     const card = document.createElement('article');
     card.className = `lesson${state ? ' ' + state : ''}`;
@@ -691,8 +697,50 @@ const renderSchedule = () => {
     lessonList.appendChild(card);
   });
 };
-renderSchedule();
-setInterval(renderSchedule, 60000);
+// Хуваарийг schedule.json-оос ачаална (мэдэгдлийн скрипт ч мөн энэ файлыг уншдаг)
+fetch('schedule.json?v=' + Date.now()).then((r) => r.json()).then((data) => {
+  SEMESTER_START = data.semesterStart;
+  SEMESTER_WEEKS = data.semesterWeeks;
+  SLOTS = data.slots;
+  COURSES = data.courses;
+  DEFAULT_ROOM = data.defaultRoom;
+  SCHEDULE = data.schedule;
+  scheduleLoaded = true;
+  renderSchedule();
+  setInterval(renderSchedule, 60000);
+}).catch(() => {
+  lessonHero.className = 'lesson-hero calm';
+  lessonHero.innerHTML = '<p class="hero-title">Хуваарь ачаалагдсангүй, дахин нээгээрэй</p>';
+});
+
+// Ухаалаг муур: нөхцөл мэдэрч хааяа өөрөө ярина (нэг нөхцөлд нэг л удаа)
+let lastWeatherSky = null;
+const mascotSaid = new Set();
+const mascotContext = () => {
+  if (mascot.classList.contains('hidden')) return;
+  const now = dalianNow();
+  const lines = [];
+  if (scheduleLoaded && now.weekday >= 1 && now.weekday <= 5) {
+    const week = weekNumber(now.date);
+    const todays = lessonsFor(now.weekday, week, week >= 1 && week <= SEMESTER_WEEKS);
+    const soon = todays.find((l) => { const d = toMinutes(SLOTS[l.slot][0]) - now.minutes; return d > 0 && d <= 15; });
+    if (soon) lines.push([`lesson-${soon.slot}-${now.date}`, `${toMinutes(SLOTS[soon.slot][0]) - now.minutes} минутын дараа ${COURSES[soon.course].zh} эхэлнэ!`]);
+    const last = todays[todays.length - 1];
+    if (last && now.minutes >= toMinutes(SLOTS[last.slot][1]) && now.minutes < toMinutes(SLOTS[last.slot][1]) + 30) lines.push([`done-${now.date}`, 'өнөөдрийн хичээл дууслаа, амар ✦']);
+  }
+  if (lastWeatherSky === 'rain') lines.push([`rain-${now.date}`, 'гадаа бороотой, шүхрээ ав ☂']);
+  if (lastWeatherSky === 'snow') lines.push([`snow-${now.date}`, 'цас орж байна, дулаан хувцасла ❄']);
+  if (now.minutes >= 22 * 60 + 30) lines.push([`sleep-${now.date}`, 'орой боллоо, сайн унтаарай ✦']);
+  const fresh = lines.find(([key]) => !mascotSaid.has(key));
+  if (!fresh) return;
+  mascotSaid.add(fresh[0]);
+  mascot.classList.remove('bouncing');
+  void mascot.offsetWidth;
+  mascot.classList.add('bouncing');
+  mascotSay(fresh[1]);
+};
+setInterval(mascotContext, 30000);
+setTimeout(mascotContext, 6000);
 
 // Онцгой өдрүүд: төрсөн өдөр, Шинэ жил, Цагаан сар, Valentine (?special=birthday гэж урьдчилж үзэж болно)
 const SPECIAL_DAYS = [

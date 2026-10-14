@@ -1,0 +1,36 @@
+name: Хичээлийн сануулга ба өглөөний тойм
+
+on:
+  schedule:
+    # Далианы цагаар 07:30 өглөөний тойм (UTC 23:30, Ням–Пүрэв = Далианы Да–Ба)
+    - cron: "30 23 * * 0-4"
+    # Хичээл эхлэхээс 15 минутын өмнө: 07:55, 09:45, 13:00, 14:50 Далианы цагаар
+    - cron: "55 23 * * 0-4"
+    - cron: "45 1 * * 1-5"
+    - cron: "0 5 * * 1-5"
+    - cron: "50 6 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pywebpush
+      - name: Мэдэгдэл явуулах
+        env:
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          PUSH_MODE: auto
+        run: python send_push.py
+      - name: Хүчингүй бүртгэл хасагдсан бол commit хийх
+        run: |
+          git diff --quiet -- subscriptions.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add subscriptions.json && git commit -m "Push бүртгэл цэвэрлэв" && git push
