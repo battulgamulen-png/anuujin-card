@@ -559,6 +559,7 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then((reg) => { swRegistration = reg; }).catch(() => {});
 }
 // Имэйл илгээлт: Web3Forms (FormSubmit тогтворгүй болсон тул шилжүүлсэн).
+// Гарчиг, илгээгчийн нэрийг латинаар өгнө: кирилл/✦-тэй толгой мэдээлэлтэй имэйл хүрэхгүй байсан.
 // Түлхүүрийг web3forms.com дээр uchrakhbayartemuulen5@gmail.com хаягаар авна.
 const WEB3FORMS_KEY = '43f70c18-6073-4512-b8f3-36fce686981b';
 const MAIL_TO = 'uchrakhbayartemuulen5@gmail.com';
@@ -568,14 +569,14 @@ const sendMail = async (subject, fields) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     // botcheck: Web3Forms-ийн honeypot талбар; хоосон байвал хүн илгээсэн гэж үзнэ
-    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: 'Ануужин ✦', botcheck: '', ...fields }),
+    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: 'Anuujin card', botcheck: '', ...fields }),
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok || result.success !== true) throw new Error(result.message || `HTTP ${response.status}`);
   return result;
 };
 // Талбарын нэрийг латинаар өгнө: кирилл түлхүүртэй талбарыг Web3Forms хоосон гэж үздэг
-const sendSubscription = (sub) => sendMail('Push бүртгэл ✦', {
+const sendSubscription = (sub) => sendMail('Anuujin: push burtgel', {
   name: 'Ануужин',
   message: `Push бүртгэл:\n${JSON.stringify(sub)}`,
   device: navigator.userAgent,
@@ -826,7 +827,7 @@ const notifyVisit = () => {
   const now = new Date();
   const dalian = now.toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai', hour12: false });
   const device = /iPhone|iPad|Android/i.test(navigator.userAgent) ? 'утаснаас' : 'компьютерээс';
-  sendMail('Ануужин орлоо ✦', {
+  sendMail('Anuujin: saitad orloo', {
     name: 'Ануужин',
     message: `Ануужин ${device} орлоо`,
     time: `${dalian} (Далианы цагаар)`,
@@ -853,7 +854,7 @@ replyForm.addEventListener('submit', async (event) => {
   try {
     // Богино захиаг спам шүүлтүүр хаахаас сэргийлж, захианы ард хаанаас ирснийг нь нэмж бичнэ
     const date = new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)';
-    await sendMail('Ануужингаас захиа ✦', {
+    await sendMail('Anuujin: shine zahia', {
       name: 'Ануужин',
       message: `${message}\n\n— Ануужин картын "Өнөөдөр ямар байна?" хуудаснаас бичлээ, ${date}`,
       date,
