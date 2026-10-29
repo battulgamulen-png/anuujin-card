@@ -363,6 +363,7 @@ body.night .day-tab { color: #d8d4f0; } body.night .day-tab.active { color: #fff
 .send { margin-top: 12px; font-size: 14px; }
 .send[disabled] { opacity: .6; cursor: wait; transform: none; }
 .reply-status { min-height: 18px; margin: 10px 0 0; color: #b07f8e; font-size: 12.5px; }
+.reply-status a { color: inherit; font-weight: 600; text-decoration: underline; }
 .reply-done { animation: noteIn .5s ease both; }
 .reply-done .plane { color: var(--rose); font-size: 46px; line-height: 1; animation: fly 1.6s ease-out both; }
 .reply-done h3 { margin: 8px 0 6px; font-family: Caveat, cursive; font-size: 40px; color: var(--rose); }

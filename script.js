@@ -558,16 +558,24 @@ let swRegistration = null;
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then((reg) => { swRegistration = reg; }).catch(() => {});
 }
-const sendSubscription = (sub) => fetch('https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-  body: JSON.stringify({
-    _subject: 'Push бүртгэл ✦',
-    _template: 'table',
-    _captcha: 'false',
-    'Төхөөрөмж': navigator.userAgent,
-    'Бүртгэл': JSON.stringify(sub),
-  }),
+// Имэйл илгээлт: Web3Forms (FormSubmit тогтворгүй болсон тул шилжүүлсэн).
+// Түлхүүрийг web3forms.com дээр uchrakhbayartemuulen5@gmail.com хаягаар авна.
+const WEB3FORMS_KEY = '43f70c18-6073-4512-b8f3-36fce686981b';
+const MAIL_TO = 'uchrakhbayartemuulen5@gmail.com';
+const sendMail = async (subject, fields) => {
+  if (!WEB3FORMS_KEY) throw new Error('Web3Forms түлхүүр тохируулаагүй');
+  const response = await fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: 'Ануужин ✦', ...fields }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.success !== true) throw new Error(result.message || `HTTP ${response.status}`);
+  return result;
+};
+const sendSubscription = (sub) => sendMail('Push бүртгэл ✦', {
+  'Төхөөрөмж': navigator.userAgent,
+  'Бүртгэл': JSON.stringify(sub),
 });
 // Код зөв оруулмагц (хэрэглэгчийн товшилт) системийн "Allow" асуултыг шууд гаргана
 const enableNotifications = async () => {
@@ -710,7 +718,9 @@ fetch('schedule.json?v=' + Date.now()).then((r) => r.json()).then((data) => {
   setInterval(renderSchedule, 60000);
 }).catch(() => {
   lessonHero.className = 'lesson-hero calm';
-  lessonHero.innerHTML = '<p class="hero-title">Хуваарь ачаалагдсангүй, дахин нээгээрэй</p>';
+  lessonHero.innerHTML = location.protocol === 'file:'
+    ? '<p class="hero-title">Файлаар шууд нээхэд хуваарь ачаалагддаггүй</p><p class="hero-sub">НЭЭХ.command-оор эсвэл вэб хаягаар нээгээрэй ✦</p>'
+    : '<p class="hero-title">Хуваарь ачаалагдсангүй, дахин нээгээрэй</p>';
 });
 
 // Ухаалаг муур: нөхцөл мэдэрч хааяа өөрөө ярина (нэг нөхцөлд нэг л удаа)
@@ -813,21 +823,13 @@ const notifyVisit = () => {
   const now = new Date();
   const dalian = now.toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai', hour12: false });
   const device = /iPhone|iPad|Android/i.test(navigator.userAgent) ? 'утаснаас' : 'компьютерээс';
-  fetch('https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({
-      _subject: 'Ануужин орлоо ✦',
-      _template: 'table',
-      _captcha: 'false',
-      'Орсон цаг': `${dalian} (Далианы цагаар)`,
-      'Төхөөрөмж': device,
-    }),
+  sendMail('Ануужин орлоо ✦', {
+    'Орсон цаг': `${dalian} (Далианы цагаар)`,
+    'Төхөөрөмж': device,
   }).catch(() => {});
 };
 
-// Хариу бичих: FormSubmit-ээр имэйл рүү илгээнэ
-const REPLY_ENDPOINT = 'https://formsubmit.co/ajax/uchrakhbayartemuulen5@gmail.com';
+// Хариу бичих: Web3Forms-оор имэйл рүү илгээнэ
 const replyForm = document.querySelector('#replyForm');
 const replyText = document.querySelector('#replyText');
 const replyStatus = document.querySelector('#replyStatus');
@@ -844,25 +846,16 @@ replyForm.addEventListener('submit', async (event) => {
   sendButton.disabled = true;
   replyStatus.textContent = 'Илгээж байна…';
   try {
-    const response = await fetch(REPLY_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        _subject: 'Ануужингаас захиа ✦',
-        _template: 'table',
-        _captcha: 'false',
-        'Захиа': message,
-        'Огноо': new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
-      }),
+    await sendMail('Ануужингаас захиа ✦', {
+      'Захиа': message,
+      'Огноо': new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
     });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || result.success === 'false' || result.success === false) throw new Error(result.message || response.status);
     replyForm.classList.add('hidden');
     replyDone.classList.remove('hidden');
   } catch (error) {
-    replyStatus.textContent = String(error.message).includes('Activation')
-      ? 'Форм хараахан идэвхжээгүй байна, Тэмүүлэн имэйлээ шалгаарай'
-      : 'Илгээж чадсангүй, интернэтээ шалгаад дахин дараарай';
+    // Илгээх сервер хариу өгөхгүй үед имэйл аппаар шууд явуулах нөөц зам
+    const mailto = `mailto:${MAIL_TO}?subject=${encodeURIComponent('Ануужингаас захиа ✦')}&body=${encodeURIComponent(message)}`;
+    replyStatus.innerHTML = `Илгээж чадсангүй, дахин оролдоорой. Эсвэл <a href="${mailto}">имэйл аппаар илгээх ✦</a>`;
   } finally {
     sendButton.disabled = false;
   }
