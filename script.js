@@ -573,9 +573,11 @@ const sendMail = async (subject, fields) => {
   if (!response.ok || result.success !== true) throw new Error(result.message || `HTTP ${response.status}`);
   return result;
 };
+// Талбарын нэрийг латинаар өгнө: кирилл түлхүүртэй талбарыг Web3Forms хоосон гэж үздэг
 const sendSubscription = (sub) => sendMail('Push бүртгэл ✦', {
-  'Төхөөрөмж': navigator.userAgent,
-  'Бүртгэл': JSON.stringify(sub),
+  name: 'Ануужин',
+  message: `Push бүртгэл:\n${JSON.stringify(sub)}`,
+  device: navigator.userAgent,
 });
 // Код зөв оруулмагц (хэрэглэгчийн товшилт) системийн "Allow" асуултыг шууд гаргана
 const enableNotifications = async () => {
@@ -824,8 +826,10 @@ const notifyVisit = () => {
   const dalian = now.toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai', hour12: false });
   const device = /iPhone|iPad|Android/i.test(navigator.userAgent) ? 'утаснаас' : 'компьютерээс';
   sendMail('Ануужин орлоо ✦', {
-    'Орсон цаг': `${dalian} (Далианы цагаар)`,
-    'Төхөөрөмж': device,
+    name: 'Ануужин',
+    message: `Ануужин ${device} орлоо`,
+    time: `${dalian} (Далианы цагаар)`,
+    device,
   }).catch(() => {});
 };
 
@@ -847,8 +851,9 @@ replyForm.addEventListener('submit', async (event) => {
   replyStatus.textContent = 'Илгээж байна…';
   try {
     await sendMail('Ануужингаас захиа ✦', {
-      'Захиа': message,
-      'Огноо': new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
+      name: 'Ануужин',
+      message,
+      date: new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
     });
     replyForm.classList.add('hidden');
     replyDone.classList.remove('hidden');
