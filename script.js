@@ -567,7 +567,8 @@ const sendMail = async (subject, fields) => {
   const response = await fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: 'Ануужин ✦', ...fields }),
+    // botcheck: Web3Forms-ийн honeypot талбар; хоосон байвал хүн илгээсэн гэж үзнэ
+    body: JSON.stringify({ access_key: WEB3FORMS_KEY, subject, from_name: 'Ануужин ✦', botcheck: '', ...fields }),
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok || result.success !== true) throw new Error(result.message || `HTTP ${response.status}`);
@@ -850,10 +851,12 @@ replyForm.addEventListener('submit', async (event) => {
   sendButton.disabled = true;
   replyStatus.textContent = 'Илгээж байна…';
   try {
+    // Богино захиаг спам шүүлтүүр хаахаас сэргийлж, захианы ард хаанаас ирснийг нь нэмж бичнэ
+    const date = new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)';
     await sendMail('Ануужингаас захиа ✦', {
       name: 'Ануужин',
-      message,
-      date: new Date().toLocaleString('mn-MN', { timeZone: 'Asia/Shanghai' }) + ' (Далиан)',
+      message: `${message}\n\n— Ануужин картын "Өнөөдөр ямар байна?" хуудаснаас бичлээ, ${date}`,
+      date,
     });
     replyForm.classList.add('hidden');
     replyDone.classList.remove('hidden');
